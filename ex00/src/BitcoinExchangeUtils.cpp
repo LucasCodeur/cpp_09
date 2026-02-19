@@ -1,31 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   BitcoinExchangeUtils.cpp                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/12 11:09:13 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/02/19 13:45:35 by lud-adam         ###   ########.fr       */
+/*   Created: 2026/02/19 13:32:59 by lud-adam          #+#    #+#             */
+/*   Updated: 2026/02/19 13:49:43 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
-
 #include "BitcoinExchange.hpp"
 
-int	main(int argc, char** argv)
+void BitcoinExchange::printMap()
 {
+	for (std::map<std::string, std::string>::const_iterator it = this->_database.begin(); it != this->_database.end(); ++it)
+		std::cout << it->first << " = " << it->second << std::endl;
+	std::cout << '\n';
+}
 
-	if (argc != 2)
-	{
-		std::cout << "Only one argument" << std::endl;
-		return (1);
-	}
-
-	BitcoinExchange	computeExchangeBitcoin;
-
-	computeExchangeBitcoin.buildDatabase(DATABASE);
-	computeExchangeBitcoin.printMap();
-	return (0);
+const BitcoinExchange& BitcoinExchange::getDatabase(void) const
+{
+	return (this->_database);
 }
