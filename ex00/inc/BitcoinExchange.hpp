@@ -15,6 +15,8 @@
 
 #include <iostream>
 
+enum type { INT, FLOAT, DOUBLE, CHAR, NUL };
+
 class	BitcoinExchange
 {
 	public:

@@ -21,6 +21,6 @@ int	main(int argc, char** argv)
 		std::cout << "Only one argument" << std::endl;
 		return (1);
 	}
-	openFile(argv[1]);
+	openFile("data.csv");
 	return (0);
 }
