@@ -1,36 +1,13 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   BitcoinExchangeConversionRate.cpp                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/12 11:09:13 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/02/19 18:08:19 by lud-adam         ###   ########.fr       */
+/*   Created: 2026/02/19 17:40:07 by lud-adam          #+#    #+#             */
+/*   Updated: 2026/02/19 18:08:18 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
 
-#include "BitcoinExchange.hpp"
-
-int	main(int argc, char** argv)
-{
-	if (argc != 2)
-	{
-		std::cout << "Only one argument" << std::endl;
-		return (1);
-	}
-	try 
-	{
-		BitcoinExchange	computeExchangeBitcoin;
-
-		computeExchangeBitcoin.buildDatabase(DATABASE);
-		computeExchangeBitcoin.printMap();
-	}
-	catch(std::exception &e)
-	{
-		std::cout << e.what() << std::endl;
-	}
-	return (0);
-}

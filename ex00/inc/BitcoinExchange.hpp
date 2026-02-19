@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 14:47:29 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/02/19 13:49:18 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/02/19 18:07:42 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <iostream>
 #include <map>
 
+//WARN Maybe handle space after date format
 enum type { INT, FLOAT, DOUBLE, CHAR, NUL };
 #define DATABASE "data.csv"
 
