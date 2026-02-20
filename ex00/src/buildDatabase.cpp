@@ -12,77 +12,84 @@
 
 #include "BitcoinExchange.hpp"
 
-#include <bits/stdc++.h>
+#include <fstream>
 #include <stdexcept>
 
-static bool isNumber(const std::string& s);
-static type detectPositiveNumber(std::string& number);
+static void	parsing(const std::string& strDate, const std::string& strNumber);
+static void	splitLine(std::string& str, std::string* strDate, std::string* strNumber);
 
 void BitcoinExchange::buildDatabase(const char* inputFile)
 {
 	std::ifstream	file(inputFile);
-	std::string		s;
+	std::string		str;
 	std::string		strDate;
 	std::string		strNumber;	
 
-	size_t			i = 0;
-	struct tm		tm;
-	type			ret = NUL;
-
 	file.exceptions(std::ifstream::badbit);
-	while (std::getline(file, s))
+	while (std::getline(file, str))
 	{
-		i = s.find(",");
-		if (i != std::string::npos)
-		{
-			strDate = s.substr(0, i);
-			strNumber = s.substr(i + 1, s.length());
-		}
-		else
-			throw std::runtime_error("Error Database, not find : ','");
+		splitLine(str, &strDate, &strNumber);
 		if (strDate == "date" && strNumber == "exchange_rate")
 			continue ;
-		if (!strptime(strDate.c_str(), "%Y-%m-%d", &tm)) 
-			throw std::runtime_error("Error Database");
-		ret = detectPositiveNumber(strNumber);
-		if (ret == CHAR || ret == NUL)
-			throw std::runtime_error("Error Database");
+		parsing(strDate, strNumber);
 		this->_database.insert( std::pair<std::string, std::string>(strDate, strNumber));
 	}
 }
 
-static bool isNumber(const std::string& s)
+static void	splitLine(std::string& str, std::string* strDate, std::string* strNumber)
 {
+	size_t			i = 0;
 
-	if (s.empty())
-		return (false);
-	std::string::const_iterator it = s.begin();
-
-	while (it != s.end() && std::isdigit(*it)) 
-		++it;
-	return (it == s.end());
-}
-
-static type	detectPositiveNumber(std::string& number)
-{
-	type	ret = NUL;
-	size_t	i = 0;
-	
-	i = number.find(".");
-	if (i != std::string::npos && number.c_str()[i] == '.' && number[0] != '-')
+	i = str.find(",");
+	if (i != std::string::npos)
 	{
-		i = number.rfind("f");
-		if (i != std::string::npos && number.c_str()[i] != 'f')
-			ret = DOUBLE;
-		else
-			ret = FLOAT;
+		*strDate = str.substr(0, i);
+		*strNumber = str.substr(i + 1, str.length());
 	}
 	else
+		throw std::runtime_error("Error Database, not find : ','");
+
+}
+
+static bool	detectMultipleDots(const std::string& str);
+static bool isGoodFormatNumber(const std::string& s);
+
+static void	parsing(const std::string& strDate, const std::string& strNumber)
+{
+	struct tm		tm;
+	
+	if (!strptime(strDate.c_str(), "%Y-%m-%d", &tm) || strDate.length() != 10) 
+		throw std::runtime_error("Date format isn't correct");
+	else if (detectMultipleDots(strNumber) == true)
+		throw std::runtime_error("Multiple dots");
+	else if (strNumber[0] == '-')
+		throw std::runtime_error("Number is negative");
+	else if (isGoodFormatNumber(strNumber) == false)
+		throw std::runtime_error("Number format isn't correct");
+}
+
+static bool	detectMultipleDots(const std::string& str)
+{
+	short int nb_dots= 0;
+
+	for (int i = 0; str[i]; i++)
 	{
-		if (isNumber(number) == true)
-			ret = INT;
-		else if (number.length() < 2 && !std::isdigit(number.c_str()[0]))
-			ret = CHAR;
+		if (str[i] == '.')	
+			nb_dots++;
 	}
-	return (ret);
+	if (nb_dots > 1)
+		return (true);
+	return (false);
+}
+
+static bool isGoodFormatNumber(const std::string& str)
+{
+	if (str.empty())
+		return (false);
+
+	std::string::const_iterator it = str.begin();
+
+	while (it != str.end() && (std::isdigit(*it) || *it == '.')) 
+		++it;
+	return (it == str.end());
 }

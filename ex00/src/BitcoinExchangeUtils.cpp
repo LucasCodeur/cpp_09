@@ -15,8 +15,8 @@
 void BitcoinExchange::printMap()
 {
 	for (std::map<std::string, std::string>::const_iterator it = this->_database.begin(); it != this->_database.end(); ++it)
-		std::cout << it->first << " = " << it->second << std::endl;
-	std::cout << '\n';
+		std::cout << it->first << " = " << it->second << "\n";
+	std::cout << std::endl;
 }
 
 const BitcoinExchange& BitcoinExchange::getDatabase(void) const
