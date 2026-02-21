@@ -1,29 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   BitcoinExchangeUtils.cpp                           :+:      :+:    :+:   */
+/*   BitcoinExchangeParseInput.cpp                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/19 13:32:59 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/02/19 13:49:43 by lud-adam         ###   ########.fr       */
+/*   Created: 2026/02/21 19:09:48 by lud-adam          #+#    #+#             */
+/*   Updated: 2026/02/21 19:35:54 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BitcoinExchange.hpp"
 
-#include <iomanip>
-
-void BitcoinExchange::printMap()
+void	BitcoinExchange::parseInput(const char* file)
 {
-	for (std::map<std::string, double>::const_iterator it = this->_database.begin(); it != this->_database.end(); ++it)
-	{
-		std::cout << std::setprecision(7) << it->first << " = " << it->second << "\n";
-	}
-	std::cout << std::endl;
+
 }
 
-const BitcoinExchange& BitcoinExchange::getDatabase(void) const
+static void	splitLine(std::string& str, std::string* strDate, std::string* strNumber)
 {
-	return (this->_database);
+	size_t			i = 0;
+
+	i = str.find(" ");
+	if (i != std::string::npos)
+	{
+		*strDate = str.substr(0, i);
+		*strNumber = str.substr(i + 1, str.length());
+	}
+	else
+		throw std::runtime_error("Error Database, not find : ','");
 }

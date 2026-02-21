@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 14:47:29 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/02/19 18:07:42 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/02/21 19:21:21 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,29 +16,31 @@
 #include <iostream>
 #include <map>
 
-//WARN Maybe handle space after date format
-enum type { INT, FLOAT, DOUBLE, CHAR, NUL };
+#define PRINT(x) std::cout << "Value is: " << x << std::endl
+
 #define DATABASE "data.csv"
 
 class	BitcoinExchange
 {
 	public:
 		BitcoinExchange	(void);
-		BitcoinExchange (const std::map<std::string, std::string>& database);
+		BitcoinExchange (const std::map<std::string, double>& database);
 		BitcoinExchange	(const BitcoinExchange &);
 		~BitcoinExchange (void);
 		BitcoinExchange& operator= ( const BitcoinExchange &);
 
 		void	buildDatabase(const char* inputFile);
+		void	parseInput(char* file);
 		void	checkDateFormat(void);
 		void	checkNumbers(void);
 		void	checkNearestDate(void);
 		void	rateConvert(void);
-
 		void	printMap();
+
 		const BitcoinExchange& getDatabase(void) const;
+
 	private:
-		std::map<std::string, std::string> _database;
+		std::map<std::string, double> _database;
 };
 
 # endif

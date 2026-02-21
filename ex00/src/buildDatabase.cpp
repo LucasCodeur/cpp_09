@@ -6,17 +6,21 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 13:23:54 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/02/19 18:07:09 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/02/21 19:36:27 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BitcoinExchange.hpp"
 
 #include <fstream>
+#include <sstream>
 #include <stdexcept>
+
+#include <stdlib.h>
 
 static void	parsing(const std::string& strDate, const std::string& strNumber);
 static void	splitLine(std::string& str, std::string* strDate, std::string* strNumber);
+template <typename T> static T strConvert(std::string& number);
 
 void BitcoinExchange::buildDatabase(const char* inputFile)
 {
@@ -32,13 +36,22 @@ void BitcoinExchange::buildDatabase(const char* inputFile)
 		if (strDate == "date" && strNumber == "exchange_rate")
 			continue ;
 		parsing(strDate, strNumber);
-		this->_database.insert( std::pair<std::string, std::string>(strDate, strNumber));
+		this->_database.insert( std::pair<std::string, double>(strDate, strConvert<double>(strNumber)));
 	}
+}
+
+template <typename T> T strConvert(std::string& number)
+{
+	T	number_convert = 0;
+	
+	char*	end = NULL;
+	number_convert = std::strtod(number.c_str(), &end);
+	return (number_convert);
 }
 
 static void	splitLine(std::string& str, std::string* strDate, std::string* strNumber)
 {
-	size_t			i = 0;
+	size_t	i = 0;
 
 	i = str.find(",");
 	if (i != std::string::npos)
@@ -48,7 +61,6 @@ static void	splitLine(std::string& str, std::string* strDate, std::string* strNu
 	}
 	else
 		throw std::runtime_error("Error Database, not find : ','");
-
 }
 
 static bool	detectMultipleDots(const std::string& str);

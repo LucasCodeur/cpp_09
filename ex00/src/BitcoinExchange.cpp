@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 17:16:20 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/02/19 18:08:20 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/02/19 13:31:15 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ BitcoinExchange::BitcoinExchange (const BitcoinExchange &other)
 		this->_database = other._database;
 }
 
-BitcoinExchange::BitcoinExchange (const std::map<std::string, std::string>& database) : _database(database)
+BitcoinExchange::BitcoinExchange (const std::map<std::string, double>& database) : _database(database)
 {
 	std::cout << "BitcoinExchange Parameterized constructeur called\n";
 }
