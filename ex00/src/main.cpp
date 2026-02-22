@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 11:09:13 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/02/22 10:58:20 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/02/22 17:43:07 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	main(int argc, char** argv)
 {
 	if (argc != 2)
 	{
-		std::cout << "Only one argument" << std::endl;
+		std::cout << "Error: could not open file." << std::endl;
 		return (1);
 	}
 	try 
@@ -26,7 +26,6 @@ int	main(int argc, char** argv)
 		BitcoinExchange	computeExchangeBitcoin;
 
 		computeExchangeBitcoin.buildDatabase(DATABASE);
-		computeExchangeBitcoin.printMap();
 		computeExchangeBitcoin.convert(argv[1]);
 	}
 	catch(std::exception &e)

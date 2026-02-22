@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 14:47:29 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/02/22 11:09:42 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/02/22 19:15:09 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <map>
 #include <stdlib.h>
 
-#define PRINT(x) std::cout << "Value is: " << x << std::endl
+#define PRINT(x) std::cout << x << std::endl
 
 #define DATABASE "data.csv"
 
@@ -32,16 +32,17 @@ class	BitcoinExchange
 
 		void	buildDatabase(const char* inputFile);
 		void	parseInput(const char* inputFile);
-		void	checkDateFormat(void);
+		void	checkDate(void);
+		bool	checkDate(std::string& strDate, char c, bool noThrow);
 		void	checkNumbers(void);
 		void	checkNearestDate(void);
 		void	convert(const char* inputFile);
 		void	printMap();
 
-		void	splitLine(std::string& str, std::string& strDate, std::string& strNumber, char c);
+		bool	splitLine(std::string& str, std::string& strDate, std::string& strNumber, char c, bool noThrow);
 		bool	detectMultipleCharacters(const std::string& str, const char c);
-		void	parsing(std::string& strDate, std::string& strNumber);
-		void	checkHeader(std::string header, const char c, const std::string toCheck1, const std::string toCheck2);
+		bool	parsing(std::string& strDate, std::string& strNumber, bool noThrow);
+		void	checkHeader(std::string header, const char c, const std::string toCheck1, const std::string toCheck2, bool noThrow);
 
 	private:
 		std::map<std::string, double> _database;

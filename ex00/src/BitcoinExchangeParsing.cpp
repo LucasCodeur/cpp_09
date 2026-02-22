@@ -6,34 +6,116 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/22 09:06:46 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/02/22 11:11:28 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/02/22 19:36:41 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BitcoinExchange.hpp"
+
 #include <cctype>
 
 static bool isGoodFormatNumber(const std::string& s);
 
-void	BitcoinExchange::parsing(std::string& strDate, std::string& strNumber)
+bool	BitcoinExchange::parsing(std::string& strDate, std::string& strNumber, bool noThrow)
 {
-	struct tm		tm;
-	 
-	PRINT(strDate);
-	PRINT(strNumber);
-	if (!strptime(strDate.c_str(), "%Y-%m-%d", &tm) || strDate.length() != 10) 
-		throw std::runtime_error("Date format isn't correct");
-	else if (tm.tm_mday > 31 || tm.tm_mday < 1 || tm.tm_mon + 1 < 1 || tm.tm_mon + 1 > 12 || tm.tm_year + 1900 > 2050 || tm.tm_year + 1900 < 2009)
-		throw std::runtime_error("Date format isn't correct");
-	else if (detectMultipleCharacters(strNumber, '.') == true)
-		throw std::runtime_error("Multiple dots");
+	std::string		message;
+
+	if (checkDate(strDate, '-', noThrow) == false)
+		return (false);
+	if (detectMultipleCharacters(strNumber, '.') == true)
+	{
+		message = "Error: multiples dots: ";
+		message += strNumber;
+		if (noThrow == false)
+			throw std::runtime_error(message);
+		else
+			std::cout << message << std::endl;
+		return (false);
+	}
 	else if (strNumber[0] == '-')
-		throw std::runtime_error("Number is negative");
+	{
+		message = "Error: not a positive number.";
+		if (noThrow == false)
+			throw std::runtime_error(message);
+		else
+			std::cout << message << std::endl;
+		return (false);
+	}
 	else if (isGoodFormatNumber(strNumber) == false)
-		throw std::runtime_error("Number format isn't correct");
+	{
+		message = "Error : number format isn't correct: ";
+		message += strNumber;
+		if (noThrow)
+			throw std::runtime_error(message);
+		else
+			std::cout << message << std::endl;
+		return (false);
+	}
+	return (true);
 }
 
-void	BitcoinExchange::splitLine(std::string& str, std::string& strDate, std::string& strNumber, char c)
+bool	BitcoinExchange::checkDate(std::string& strDate, char c, bool noThrow)
+{
+	struct tm		tm;
+	size_t			i = 0;
+	size_t			temp;
+	std::string		message;
+	
+	if (!strptime(strDate.c_str(), "%Y-%m-%d", &tm) || strDate.length() != 10) 
+	{
+		message = "Error: bad input => ";
+		message += strDate;
+		if (noThrow == false)
+			throw std::runtime_error(message);
+		else
+			std::cout << message << std::endl;
+		return (false);
+
+	}
+	i = strDate.find(c);
+	PRINT("STRDATE");
+	PRINT(strDate);
+	if (i != std::string::npos)
+	{
+		std::string strTemp = strDate.substr(0, i);
+		PRINT("STRTEMP");
+		PRINT(strTemp);
+		tm.tm_year = strConvert<int>(strTemp);
+		i = strDate.find('-', i + 1);
+		PRINT("STRDATE DE I");
+		PRINT(strDate[i]);
+		strTemp = strDate.substr(i + 1 , 2);
+		PRINT("STRTEMP");
+		PRINT(strTemp);
+		tm.tm_mon = strConvert<int>(strTemp);
+		i = strDate.find('-', i + 1);
+		PRINT("STRDATE DE I");
+		PRINT(strDate[i]);
+		strTemp = strDate.substr(i + 1, 2);
+		PRINT("STRTEMP");
+		PRINT(strTemp);
+		tm.tm_mday = strConvert<int>(strTemp);
+		PRINT("Year");
+		PRINT(tm.tm_year);
+		PRINT("Mon");
+		PRINT(tm.tm_mon);
+		PRINT("Day");
+		PRINT(tm.tm_mday);
+	}
+	if (tm.tm_mday > 31 || tm.tm_mday * 10 < 1 || tm.tm_mon + 1 < 1 || tm.tm_mon + 1 > 12 || tm.tm_year + 1900 > 2050 || tm.tm_year + 1900 < 2009)
+	{
+		message = "Error: bad input => ";
+		message += strDate;
+		if (noThrow == false)
+			throw std::runtime_error(message);
+		else
+			std::cout << message << std::endl;
+		return (false);
+	}
+	return (true);
+}
+
+bool	BitcoinExchange::splitLine(std::string& str, std::string& strDate, std::string& strNumber, char c, bool noThrow)
 {
 	size_t	i;
 
@@ -49,21 +131,26 @@ void	BitcoinExchange::splitLine(std::string& str, std::string& strDate, std::str
 	{
 		std::string message;
 
-		message = "Error Database, not find : ";
-		message = message + c;
-		throw std::runtime_error(message);
+		message = "Error: bad input => ";
+		message = message + str;
+		if (noThrow == false)
+			throw std::runtime_error(message);
+		else
+			std::cout << message << std::endl;
+		return (false);
 	}
+	return (true);
 }
 
-void	BitcoinExchange::checkHeader(std::string header, const char c, const std::string toCheck1, const std::string toCheck2)
+void	BitcoinExchange::checkHeader(std::string header, const char c, const std::string toCheck1, const std::string toCheck2, bool noThrow)
 {
 	std::string str1;
 	std::string str2;
 
-	this->splitLine(header, str1, str2, c);
+	this->splitLine(header, str1, str2, c, noThrow);
 	if (str1 == toCheck1 && str2 == toCheck2)
 		return ;
-	throw std::runtime_error("Header format isn't correct");
+	throw std::runtime_error("Error: header format isn't correct");
 }
 
 bool	BitcoinExchange::detectMultipleCharacters(const std::string& str, const char c)

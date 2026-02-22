@@ -6,15 +6,17 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 17:16:20 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/02/22 11:09:58 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/02/22 19:15:03 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BitcoinExchange.hpp"
 
 #include <fstream>
+#include <limits>
 #include <sstream>
 #include <stdexcept>
+#include <map>
 
 BitcoinExchange::BitcoinExchange (void)
 {
@@ -54,11 +56,11 @@ void BitcoinExchange::buildDatabase(const char* inputFile)
 
 	file.exceptions(std::ifstream::badbit);
 	std::getline(file, str);
-	this->checkHeader(str, ',', "date", "exchange_rate");
+	this->checkHeader(str, ',', "date", "exchange_rate", false);
 	while (std::getline(file, str))
 	{
-		this->splitLine(str, strDate, strNumber, ',');
-		this->parsing(strDate, strNumber);
+		this->splitLine(str, strDate, strNumber, ',', false);
+		this->parsing(strDate, strNumber, false);
 		this->_database.insert( std::pair<std::string, double>(strDate, strConvert<double>(strNumber)));
 	}
 }
@@ -72,10 +74,24 @@ void	BitcoinExchange::convert(const char* inputFile)
 
 	file.exceptions(std::ifstream::badbit);
 	std::getline(file, str);
-	this->checkHeader(str, ' ', "date", "value");
+	this->checkHeader(str, ' ', "date", "value", true);
 	while (std::getline(file, str))
 	{
-		this->splitLine(str, strDate, strNumber, ' ');
-		this->parsing(strDate, strNumber);
+		PRINT("LINE: ");
+		PRINT(str);
+		if (this->splitLine(str, strDate, strNumber, ' ', true) == false)
+			continue ;
+		if (this->parsing(strDate, strNumber, true) == false)
+			continue ;
+		std::map<std::string, double>:: iterator it = this->_database.lower_bound(strDate);
+		if (it != this->_database.begin() && strDate != it->first)
+			--it;
+		double number = strConvert<double>(strNumber); 
+		if (std::numeric_limits<int>::max() < number)
+		{
+			PRINT("Error: too large a number.");
+			continue ;
+		}
+		std::cout << strDate << " => " << strNumber << " = " << it->second * number << std::endl;
 	}
 }
