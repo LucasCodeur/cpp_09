@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 14:47:29 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/02/21 19:21:21 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/02/22 11:09:42 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include <map>
+#include <stdlib.h>
 
 #define PRINT(x) std::cout << "Value is: " << x << std::endl
 
@@ -30,17 +31,29 @@ class	BitcoinExchange
 		BitcoinExchange& operator= ( const BitcoinExchange &);
 
 		void	buildDatabase(const char* inputFile);
-		void	parseInput(char* file);
+		void	parseInput(const char* inputFile);
 		void	checkDateFormat(void);
 		void	checkNumbers(void);
 		void	checkNearestDate(void);
-		void	rateConvert(void);
+		void	convert(const char* inputFile);
 		void	printMap();
 
-		const BitcoinExchange& getDatabase(void) const;
+		void	splitLine(std::string& str, std::string& strDate, std::string& strNumber, char c);
+		bool	detectMultipleCharacters(const std::string& str, const char c);
+		void	parsing(std::string& strDate, std::string& strNumber);
+		void	checkHeader(std::string header, const char c, const std::string toCheck1, const std::string toCheck2);
 
 	private:
 		std::map<std::string, double> _database;
 };
+
+template <typename T> T strConvert(std::string& number)
+{
+	T	number_convert = 0;
+	
+	char*	end = NULL;
+	number_convert = std::strtod(number.c_str(), &end);
+	return (number_convert);
+}
 
 # endif

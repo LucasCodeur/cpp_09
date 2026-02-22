@@ -6,7 +6,7 @@
 #    By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/18 12:51:21 by lud-adam          #+#    #+#              #
-#    Updated: 2026/02/19 13:47:36 by lud-adam         ###   ########.fr        #
+#    Updated: 2026/02/22 10:54:57 by lud-adam         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,8 +21,10 @@ P_INC = inc/
 
 SRC = main.cpp \
 	  BitcoinExchange.cpp \
-	  buildDatabase.cpp \
-	  BitcoinExchangeUtils.cpp
+	  BitcoinExchangeUtils.cpp \
+	  BitcoinExchangeBuildDatabase.cpp \
+	  BitcoinExchangeParsing.cpp \
+	  BitcoinExchangeConversionRate.cpp \
 
 SRCS = \
 	$(addprefix $(P_SRC), $(SRC)) \

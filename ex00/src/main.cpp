@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 11:09:13 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/02/19 18:08:19 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/02/22 10:58:20 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ int	main(int argc, char** argv)
 
 		computeExchangeBitcoin.buildDatabase(DATABASE);
 		computeExchangeBitcoin.printMap();
+		computeExchangeBitcoin.convert(argv[1]);
 	}
 	catch(std::exception &e)
 	{

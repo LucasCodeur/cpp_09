@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 13:32:59 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/02/19 13:49:43 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/02/22 09:58:16 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,4 @@ void BitcoinExchange::printMap()
 		std::cout << std::setprecision(7) << it->first << " = " << it->second << "\n";
 	}
 	std::cout << std::endl;
-}
-
-const BitcoinExchange& BitcoinExchange::getDatabase(void) const
-{
-	return (this->_database);
 }
