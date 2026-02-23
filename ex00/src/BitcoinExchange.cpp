@@ -20,19 +20,19 @@
 
 BitcoinExchange::BitcoinExchange (void)
 {
-	std::cout << "BitcoinExchange Default constructeur called\n";
+	// std::cout << "BitcoinExchange Default constructeur called\n";
 }
 
 BitcoinExchange::BitcoinExchange (const BitcoinExchange &other)
 {
-	std::cout << "BitcoinExchange Copy constructeur called\n";
+	// std::cout << "BitcoinExchange Copy constructeur called\n";
 	if (this != &other)
 		this->_database = other._database;
 }
 
 BitcoinExchange::BitcoinExchange (const std::map<std::string, double>& database) : _database(database)
 {
-	std::cout << "BitcoinExchange Parameterized constructeur called\n";
+	// std::cout << "BitcoinExchange Parameterized constructeur called\n";
 }
 
 BitcoinExchange& BitcoinExchange::operator= (const BitcoinExchange &other)
@@ -44,7 +44,7 @@ BitcoinExchange& BitcoinExchange::operator= (const BitcoinExchange &other)
 
 BitcoinExchange::~BitcoinExchange (void)
 {
-	std::cout << "BitcoinExchange Destructeur called\n";
+	// std::cout << "BitcoinExchange Destructeur called\n";
 }
 
 void BitcoinExchange::buildDatabase(const char* inputFile)
@@ -56,13 +56,18 @@ void BitcoinExchange::buildDatabase(const char* inputFile)
 
 	file.exceptions(std::ifstream::badbit);
 	std::getline(file, str);
-	this->checkHeader(str, ',', "date", "exchange_rate", false);
+	if (str.empty() == false)
+		this->checkHeader(str, ',', "date", "exchange_rate", false);
+	else
+		throw std::runtime_error("Error: csv is empty");
 	while (std::getline(file, str))
 	{
 		this->splitLine(str, strDate, strNumber, ',', false);
 		this->parsing(strDate, strNumber, false);
-		this->_database.insert( std::pair<std::string, double>(strDate, strConvert<double>(strNumber)));
+		this->_database.insert(std::pair<std::string, double>(strDate, strConvert<double>(strNumber)));
 	}
+	if (this->_database.empty() == true)
+		throw std::runtime_error("Error: empty database");
 }
 
 void	BitcoinExchange::convert(const char* inputFile)
@@ -74,20 +79,21 @@ void	BitcoinExchange::convert(const char* inputFile)
 
 	file.exceptions(std::ifstream::badbit);
 	std::getline(file, str);
-	this->checkHeader(str, ' ', "date", "value", true);
+	if (str.empty() == false)
+		this->checkHeader(str, ' ', "date", "value", true);
+	else
+		throw std::runtime_error("Error: empty file");
 	while (std::getline(file, str))
 	{
-		// PRINT("LINE: ");
-		// PRINT(str);
 		if (this->splitLine(str, strDate, strNumber, ' ', true) == false)
 			continue ;
 		if (this->parsing(strDate, strNumber, true) == false)
-			return ;
-		std::map<std::string, double>:: iterator it = this->_database.lower_bound(strDate);
-		if ((it != this->_database.begin() && it != this->_database.end()) && strDate != it->first)
+			continue ;
+		std::map<std::string, double>::iterator it = this->_database.lower_bound(strDate);
+		if (it != this->_database.begin() && strDate != it->first)
 			--it;
 		double number = strConvert<double>(strNumber); 
-		if (std::numeric_limits<int>::max() < number)
+		if (number > 1000)
 		{
 			PRINT("Error: too large a number.");
 			continue ;

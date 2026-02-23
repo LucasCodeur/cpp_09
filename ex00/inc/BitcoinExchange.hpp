@@ -32,8 +32,7 @@ class	BitcoinExchange
 
 		void	buildDatabase(const char* inputFile);
 		void	parseInput(const char* inputFile);
-		void	checkDate(void);
-		bool	checkDate(std::string& strDate, char c, bool noThrow);
+		bool	checkDate(std::string strDate, bool noThrow);
 		void	checkNumbers(void);
 		void	checkNearestDate(void);
 		void	convert(const char* inputFile);

@@ -20,7 +20,7 @@ bool	BitcoinExchange::parsing(std::string& strDate, std::string& strNumber, bool
 {
 	std::string		message;
 
-	if (checkDate(strDate, '-', noThrow) == false)
+	if (checkDate(strDate, noThrow) == false)
 		return (false);
 	if (detectMultipleCharacters(strNumber, '.') == true)
 	{
@@ -57,11 +57,11 @@ bool	BitcoinExchange::parsing(std::string& strDate, std::string& strNumber, bool
 static int	splitDate(std::string& strDate);
 static bool	checkFormatDate(struct tm tm, std::string& strDate, bool noThrow);
 
-bool	BitcoinExchange::checkDate(std::string& strDate, char c, bool noThrow)
+bool	BitcoinExchange::checkDate(std::string strDate, bool noThrow)
 {
 	struct tm		tm;
 	std::string		message;
-	
+		
 	if (!strptime(strDate.c_str(), "%Y-%m-%d", &tm) || strDate.length() != 10) 
 	{
 		message = "Error: bad input => ";
@@ -73,28 +73,12 @@ bool	BitcoinExchange::checkDate(std::string& strDate, char c, bool noThrow)
 		return (false);
 
 	}
+
 	std::string	temp = strDate;
+
 	tm.tm_year = splitDate(strDate);
-	PRINT(tm.tm_year);
-	// for (int i = 0; i < 4; i++)
-	// {
-	// 	PRINT(year[i]);
-	// }
-	// PRINT("\n");
 	tm.tm_mon = splitDate(strDate);
-	PRINT(tm.tm_mon);
-	// for (int i = 0; i < 2; i++)
-	// {
-	// 	PRINT(month[i]);
-	// }
-	// PRINT("\n");
 	tm.tm_mday = splitDate(strDate);
-	PRINT(tm.tm_mday);
-	// for (int i = 0; i < 2; i++)
-	// {
-	// 	PRINT(day[i]);
-	// }
-	// PRINT("\n---------------------------------------------------------------------------------------\n");
 	if (checkFormatDate(tm, temp, noThrow) == false)
 		return (false);
 	return (true);
@@ -118,10 +102,15 @@ static int	splitDate(std::string& strDate)
 	return (ret);
 }
 
+static int	checkLeapYear(int year);
+
 static bool	checkFormatDate(struct tm tm, std::string& strDate, bool noThrow)
 {
 	std::string		message;
-	if (tm.tm_mday > 31 || tm.tm_mday * 10 < 1 || tm.tm_mon + 1 < 1 || tm.tm_mon + 1 > 12 || tm.tm_year + 1900 > 2050 || tm.tm_year + 1900 < 2009)
+	int				feb = checkLeapYear(tm.tm_year);
+	int				dayAccordingMonths[13] = {0, 31, feb, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+	if (tm.tm_mday > dayAccordingMonths[tm.tm_mon] || tm.tm_mday < 1 || tm.tm_mon < 1 || tm.tm_mon > 12 || tm.tm_year > 2050 || tm.tm_year < 2009)
 	{
 		message = "Error: bad input => ";
 		message += strDate;
@@ -132,6 +121,19 @@ static bool	checkFormatDate(struct tm tm, std::string& strDate, bool noThrow)
 		return (false);
 	}
 	return (true);
+}
+
+static int	checkLeapYear(int year)
+{
+	if (year % 400 == 0)
+		return (29);
+	else if (year % 100 == 0)
+		return (28);
+	else if (year % 4 == 0)
+	{
+		return (29);
+	}
+	return (28);
 }
 
 bool	BitcoinExchange::splitLine(std::string& str, std::string& strDate, std::string& strNumber, char c, bool noThrow)
@@ -178,7 +180,7 @@ bool	BitcoinExchange::detectMultipleCharacters(const std::string& str, const cha
 
 	for (int i = 0; str[i]; i++)
 	{
-		if (str[i] == c)	
+		if (str[i] == c)
 			nb_dots++;
 	}
 	if (nb_dots > 1)

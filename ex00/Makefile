@@ -22,9 +22,7 @@ P_INC = inc/
 SRC = main.cpp \
 	  BitcoinExchange.cpp \
 	  BitcoinExchangeUtils.cpp \
-	  BitcoinExchangeBuildDatabase.cpp \
 	  BitcoinExchangeParsing.cpp \
-	  BitcoinExchangeConversionRate.cpp \
 
 SRCS = \
 	$(addprefix $(P_SRC), $(SRC)) \
