@@ -77,14 +77,14 @@ void	BitcoinExchange::convert(const char* inputFile)
 	this->checkHeader(str, ' ', "date", "value", true);
 	while (std::getline(file, str))
 	{
-		PRINT("LINE: ");
-		PRINT(str);
+		// PRINT("LINE: ");
+		// PRINT(str);
 		if (this->splitLine(str, strDate, strNumber, ' ', true) == false)
 			continue ;
 		if (this->parsing(strDate, strNumber, true) == false)
-			continue ;
+			return ;
 		std::map<std::string, double>:: iterator it = this->_database.lower_bound(strDate);
-		if (it != this->_database.begin() && strDate != it->first)
+		if ((it != this->_database.begin() && it != this->_database.end()) && strDate != it->first)
 			--it;
 		double number = strConvert<double>(strNumber); 
 		if (std::numeric_limits<int>::max() < number)

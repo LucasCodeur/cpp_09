@@ -54,11 +54,12 @@ bool	BitcoinExchange::parsing(std::string& strDate, std::string& strNumber, bool
 	return (true);
 }
 
+static int	splitDate(std::string& strDate);
+static bool	checkFormatDate(struct tm tm, std::string& strDate, bool noThrow);
+
 bool	BitcoinExchange::checkDate(std::string& strDate, char c, bool noThrow)
 {
 	struct tm		tm;
-	size_t			i = 0;
-	size_t			temp;
 	std::string		message;
 	
 	if (!strptime(strDate.c_str(), "%Y-%m-%d", &tm) || strDate.length() != 10) 
@@ -72,36 +73,54 @@ bool	BitcoinExchange::checkDate(std::string& strDate, char c, bool noThrow)
 		return (false);
 
 	}
-	i = strDate.find(c);
-	PRINT("STRDATE");
-	PRINT(strDate);
-	if (i != std::string::npos)
+	std::string	temp = strDate;
+	tm.tm_year = splitDate(strDate);
+	PRINT(tm.tm_year);
+	// for (int i = 0; i < 4; i++)
+	// {
+	// 	PRINT(year[i]);
+	// }
+	// PRINT("\n");
+	tm.tm_mon = splitDate(strDate);
+	PRINT(tm.tm_mon);
+	// for (int i = 0; i < 2; i++)
+	// {
+	// 	PRINT(month[i]);
+	// }
+	// PRINT("\n");
+	tm.tm_mday = splitDate(strDate);
+	PRINT(tm.tm_mday);
+	// for (int i = 0; i < 2; i++)
+	// {
+	// 	PRINT(day[i]);
+	// }
+	// PRINT("\n---------------------------------------------------------------------------------------\n");
+	if (checkFormatDate(tm, temp, noThrow) == false)
+		return (false);
+	return (true);
+}
+
+static int	splitDate(std::string& strDate)
+{
+	size_t			pos;
+	std::string		strTemp;
+	int				ret = 0;
+
+	pos = strDate.find("-");
+	if (pos != std::string::npos)
 	{
-		std::string strTemp = strDate.substr(0, i);
-		PRINT("STRTEMP");
-		PRINT(strTemp);
-		tm.tm_year = strConvert<int>(strTemp);
-		i = strDate.find('-', i + 1);
-		PRINT("STRDATE DE I");
-		PRINT(strDate[i]);
-		strTemp = strDate.substr(i + 1 , 2);
-		PRINT("STRTEMP");
-		PRINT(strTemp);
-		tm.tm_mon = strConvert<int>(strTemp);
-		i = strDate.find('-', i + 1);
-		PRINT("STRDATE DE I");
-		PRINT(strDate[i]);
-		strTemp = strDate.substr(i + 1, 2);
-		PRINT("STRTEMP");
-		PRINT(strTemp);
-		tm.tm_mday = strConvert<int>(strTemp);
-		PRINT("Year");
-		PRINT(tm.tm_year);
-		PRINT("Mon");
-		PRINT(tm.tm_mon);
-		PRINT("Day");
-		PRINT(tm.tm_mday);
+		strTemp = strDate.substr(0, pos);
+		strDate.erase(0, pos + 1);
+		ret = strConvert<int>(strTemp);
 	}
+	else
+		ret = strConvert<int>(strDate);
+	return (ret);
+}
+
+static bool	checkFormatDate(struct tm tm, std::string& strDate, bool noThrow)
+{
+	std::string		message;
 	if (tm.tm_mday > 31 || tm.tm_mday * 10 < 1 || tm.tm_mon + 1 < 1 || tm.tm_mon + 1 > 12 || tm.tm_year + 1900 > 2050 || tm.tm_year + 1900 < 2009)
 	{
 		message = "Error: bad input => ";

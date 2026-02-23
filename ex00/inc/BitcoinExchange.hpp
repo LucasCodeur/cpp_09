@@ -17,7 +17,7 @@
 #include <map>
 #include <stdlib.h>
 
-#define PRINT(x) std::cout << x << std::endl
+#define PRINT(x) std::cout << x << std::endl;
 
 #define DATABASE "data.csv"
 
