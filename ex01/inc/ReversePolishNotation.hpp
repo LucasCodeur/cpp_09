@@ -37,7 +37,7 @@ class	ReversePolishNotation
 		int	_sizeStr;
 };
 
-template <typename T> T strConvert(const char& number)
+template <typename T> T strConvert(const char number)
 {
 	T	number_convert = 0;
 	

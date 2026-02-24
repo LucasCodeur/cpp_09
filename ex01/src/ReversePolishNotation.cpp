@@ -16,7 +16,7 @@
 
 ReversePolishNotation::ReversePolishNotation (void)
 {
-	std::cout << "ReversePolishNotation Default constructeur called\n";
+	// std::cout << "ReversePolishNotation Default constructeur called\n";
 }
 
 ReversePolishNotation::ReversePolishNotation (const ReversePolishNotation &other)
@@ -25,12 +25,12 @@ ReversePolishNotation::ReversePolishNotation (const ReversePolishNotation &other
 	{
 		this->_sizeStr = other._sizeStr;
 	}
-	std::cout << "ReversePolishNotation Copy constructeur called\n";
+	// std::cout << "ReversePolishNotation Copy constructeur called\n";
 }
 
 ReversePolishNotation::ReversePolishNotation (int _sizeStr) : _sizeStr(_sizeStr)
 {
-	std::cout << "ReversePolishNotation Parameterized constructeur called\n";
+	// std::cout << "ReversePolishNotation Parameterized constructeur called\n";
 }
 
 ReversePolishNotation& ReversePolishNotation::operator= (const ReversePolishNotation &other)
@@ -44,7 +44,7 @@ ReversePolishNotation& ReversePolishNotation::operator= (const ReversePolishNota
 
 ReversePolishNotation::~ReversePolishNotation (void)
 {
-	std::cout << "ReversePolishNotation Destructeur called\n";
+	// std::cout << "ReversePolishNotation Destructeur called\n";
 }
 
 static bool	detectOperators(char& op);
@@ -53,10 +53,10 @@ bool ReversePolishNotation::parsing(std::string polishExpression)
 {
 	int	operands = 0;
 	int	operators = 0;
-	std::string	errorMessage = "Error: format not correct";
+	std::string	errorMessage = "Error";
 
 	if (polishExpression.empty() == true)
-		throw std::runtime_error("Error: expression empty");
+		throw std::runtime_error("Error");
 	this->_sizeStr = polishExpression.length();
 	for (int i = 0; i < this->_sizeStr; i++)
 	{
@@ -68,12 +68,10 @@ bool ReversePolishNotation::parsing(std::string polishExpression)
 			throw std::runtime_error(errorMessage);
 		else
 			operands++;
-		if (operators > operands)
+		if (operators >= operands)
 			throw std::runtime_error(errorMessage);
 	}
-	if (operands <= operators)
-		throw::std::runtime_error(errorMessage);
-	else if (operators < 1)
+	if (operators < 1)
 		throw::std::runtime_error(errorMessage);
 	else if (std::abs(operands - operators) > 1) 
 		throw::std::runtime_error(errorMessage);
@@ -87,37 +85,38 @@ static bool	detectOperators(char& op)
 	return (false);
 }
 
-static int	computeExpr(int operand_1, int operand_2, char& op);
+static float	computeExpr(float operand_1, float operand_2, char& op);
 
 bool ReversePolishNotation::rpn(std::string polishExpression)
 {
-	std::stack<int> _stack;
-	int				operand_1 = 0;
-	int				operand_2 = 0;
-	int				ret = 0;
+	std::stack<float>	_stack;
+	float				operand_1 = 0;
+	float				operand_2 = 0;
+	float				ret = 0;
 
 	for (int i = 0; i < this->_sizeStr; i++)
 	{
 		if (std::isspace(polishExpression[i]))
 			continue ;
-		if (_stack.size() > 1 && detectOperators(polishExpression[i]) == true)
+		else if (detectOperators(polishExpression[i]) == true)
 		{
-			PRINT("jfdlsha");
 			operand_1 = _stack.top();
 			_stack.pop();
 			operand_2 = _stack.top();
 			_stack.pop();
-			ret += computeExpr(operand_1, operand_2, polishExpression[i]);
+			ret = computeExpr(operand_1, operand_2, polishExpression[i]);
+			_stack.push(ret);
 		}
-		_stack.push(strConvert<int>(polishExpression[i]));
+		else
+			_stack.push(strConvert<float>(polishExpression[i]));
 	}
 	std::cout << ret << std::endl;
 	return (true);
 }
 
-static int	computeExpr(int operand_1, int operand_2, char& op)
+static float	computeExpr(float operand_1, float operand_2, char& op)
 {
-	int		ret = 0;
+	float		ret = 0;
 
 	if (op == '+')
 		ret = operand_2 + operand_1;
