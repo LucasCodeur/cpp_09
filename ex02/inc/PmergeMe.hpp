@@ -1,40 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ReversePolishNotation.hpp                                :+:      :+:    :+:   */
+/*   PmergeMe.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 14:47:29 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/02/22 19:15:09 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/02/24 11:15:53 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef REVERSE_POLISH_NOTATION_HPP 
-# define REVERSE_POLISH_NOTATION_HPP
+#ifndef PMERGEME_HPP 
+# define PMERGEME_HPP
 
 #include <iostream>
-#include <stack>
 #include <stdlib.h>
 
 #define PRINT(x) std::cout << x << std::endl;
 
 #define DATABASE "data.csv"
 
-class	ReversePolishNotation
+class	PmergeMe
 {
 	public:
-		ReversePolishNotation	(void);
-		ReversePolishNotation (int _sizeStr);
-		ReversePolishNotation	(const ReversePolishNotation &);
-		~ReversePolishNotation	(void);
-		ReversePolishNotation& operator= ( const ReversePolishNotation &);
-
-		bool parsing(std::string polishExpression);
-		bool rpn(std::string polishExpression);
+		PmergeMe	(void);
+		PmergeMe (int _sizeStr);
+		PmergeMe	(const PmergeMe &);
+		~PmergeMe	(void);
+		PmergeMe& operator= ( const PmergeMe &);
 
 	private:
-		int	_sizeStr;
 };
 
 template <typename T> T strConvert(const char number)
