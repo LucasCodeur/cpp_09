@@ -12,6 +12,7 @@
 
 .PHONY : all clean fclean re debug
 CC = c++
+CC_DEBUG = g++
 CFLAGS = -Wall -Wextra -Werror -MMD -std=c++98
 CFLAGS_DEBUG = -Wall -Wextra -MMD -g3 -D DEBUG=1
 NAME = PmergeMe 
@@ -20,6 +21,7 @@ P_OBJ = .obj/
 P_INC = inc/
 
 SRC = main.cpp \
+	  PmergeMe.cpp \
 
 SRCS = \
 	$(addprefix $(P_SRC), $(SRC)) \
@@ -63,6 +65,6 @@ re: fclean all
 #############################################################################################
 # Debugging rules
 debug:
-	@$(MAKE) $(NAME) CFLAGS="$(CFLAGS_DEBUG)"
+	@$(MAKE) $(NAME) CFLAGS="$(CFLAGS_DEBUG)" CC="$(CC_DEBUG)"
 
 -include $(DEPS)

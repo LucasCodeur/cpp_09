@@ -14,21 +14,39 @@
 
 #include "PmergeMe.hpp"
 
+static void	t_strtod_error(std::string test);
+static void	t_parsing(int argc, char** argv);
+
 int	main(int argc, char** argv)
 {
-	if (argc != 2)
-	{
-		std::cerr << "Error" << std::endl;
-		return (1);
-	}
+	t_strtod_error("2a4");
+	t_parsing(argc, argv);
+}
+
+static void	t_strtod_error(std::string test)
+{
 	try 
 	{
-		PRINT("HELLO WORLD");
+		int number = strConvert<int>(test);
+		std::cout << number << std::endl;
 	}
-	catch(std::exception &e)
+	catch (std::exception &e)
 	{
-		std::cerr << e.what() << std::endl;
-		return (1);
+		std::cout << e.what() << std::endl;
 	}
-	return (0);
+}
+
+static void	t_parsing(int argc, char** argv)
+{
+	try 
+	{
+		PmergeMe	test;
+
+		test.parsing(argc, argv);
+		test.printVec();
+	}
+	catch (std::exception &e)
+	{
+		std::cout << e.what() << std::endl;
+	}
 }

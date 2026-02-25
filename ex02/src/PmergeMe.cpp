@@ -20,29 +20,70 @@ PmergeMe::PmergeMe (void)
 	// std::cout << "PmergeMe Default constructeur called\n";
 }
 
-PmergeMe::PmergeMe (const PmergeMe &other)
-{
-	if (this != &other)
-	{
-		this->_sizeStr = other._sizeStr;
-	}
-	// std::cout << "PmergeMe Copy constructeur called\n";
-}
+// PmergeMe::PmergeMe (const PmergeMe)
+// {
+// 	// if (this != &other)
+// 	// {
+// 	// }
+// 	// std::cout << "PmergeMe Copy constructeur called\n";
+// }
 
-PmergeMe::PmergeMe (int _sizeStr) : _sizeStr(_sizeStr)
+PmergeMe::PmergeMe (int)
 {
 	// std::cout << "PmergeMe Parameterized constructeur called\n";
 }
 
-PmergeMe& PmergeMe::operator= (const PmergeMe &other)
-{
-	if (this != &other)
-	{
-	}
-	return (*this);
-}
+// PmergeMe& PmergeMe::operator= (const PmergeMe &other)
+// {
+// 	// if (this != &other)
+// 	// {
+// 	// }
+// 	return (*this);
+// }
 
 PmergeMe::~PmergeMe (void)
 {
 	// std::cout << "PmergeMe Destructeur called\n";
+}
+
+void		PmergeMe::fordJonhson(void)
+{
+		
+}
+
+void		PmergeMe::parsing(int argc, char**argv)
+{
+	std::string str;
+	std::string substr;
+	size_t pos = 0;
+
+	for (int i = 1; i < argc - 1; i++)
+	{
+		str = argv[i];	
+		if (str.empty() == true)
+			continue ;
+		while (1)
+		{
+			pos = str.find(" ");
+			if (pos != std::string::npos)
+			{
+				substr = str.substr(0, pos);
+				this->container.push_back(strConvert<int>(substr));
+				str.erase(0, pos);
+			}
+			else
+			{
+				this->container.push_back(strConvert<int>(str));
+				break ;
+			}
+		}
+	}
+}
+
+void		PmergeMe::printVec()
+{
+	for (size_t i = 0; i < this->container.size(); i++)
+	{
+		std::cout << this->container[i] << std::endl;
+	}
 }
