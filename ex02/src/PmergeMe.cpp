@@ -55,9 +55,10 @@ void		PmergeMe::parsing(int argc, char**argv)
 {
 	std::string str;
 	std::string substr;
-	size_t pos = 0;
+	size_t		pos = 0;
+	int			number = 0;
 
-	for (int i = 1; i < argc - 1; i++)
+	for (int i = 1; i < argc; i++)
 	{
 		str = argv[i];	
 		if (str.empty() == true)
@@ -68,12 +69,14 @@ void		PmergeMe::parsing(int argc, char**argv)
 			if (pos != std::string::npos)
 			{
 				substr = str.substr(0, pos);
-				this->container.push_back(strConvert<int>(substr));
-				str.erase(0, pos);
+				number = strConvert<int>(substr);
+				this->container.push_back(number);
+				str.erase(0, pos + 1);
 			}
 			else
 			{
-				this->container.push_back(strConvert<int>(str));
+				number = strConvert<int>(str);
+				this->container.push_back(number);
 				break ;
 			}
 		}

@@ -44,8 +44,8 @@ template <typename T> T strConvert(std::string& number)
 	
 	char*	end = NULL;
 	number_convert = std::strtod(number.c_str(), &end);
-	if (*end)
-		throw std::runtime_error("Error: numbers inside the argument");
+	// if (*end)
+	// 	throw std::runtime_error("Error: problem inside argument");
 	return (number_convert);
 }
 

@@ -19,7 +19,7 @@ static void	t_parsing(int argc, char** argv);
 
 int	main(int argc, char** argv)
 {
-	t_strtod_error("2a4");
+	// t_strtod_error("2a4");
 	t_parsing(argc, argv);
 }
 
