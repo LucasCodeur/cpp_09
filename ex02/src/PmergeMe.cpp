@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 17:16:20 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/02/24 11:16:06 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/02/26 11:27:11 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #include <cctype>
 #include <stdexcept>
+#include <vector>
 
 PmergeMe::PmergeMe (void)
 {
@@ -46,45 +47,47 @@ PmergeMe::~PmergeMe (void)
 	// std::cout << "PmergeMe Destructeur called\n";
 }
 
-static void		divideAndComp(int step, int size,int start, int handleEnd);
+static void		divideAndComp();
 
 void		PmergeMe::fordJonhson()
 {
-	int	size = this->container.size();
-	if (size < 2)
-		throw std::runtime_error("Error: not enough elements");
-	int	step = 2;
-	int	start = 1;
-	int	handleEnd = (size % step == 0) ? 0 : 1;
-	divideAndComp(step, size, handleEnd);
+	int		size = this->mainVec.size();
+	int		sizeDividedVec = size / 2;
+	this->dividedVec = new std::vector<int>[sizeDividedVec];
+	divideAndComp(size, sizeDividedVec);
+	delete [] this->dividedVec;
 }
 
-static void		divideAndComp(int step, int size,int start, int handleEnd)
+void		PmergeMe::divideAndComp(int size, int sizeDividedVec)
 {
-	for (size_t i = start; i < this->container.size() - handleEnd; i += step)
+
+	fillDividedVec(size, sizeDividedVec);
+	// divideAndComp();
+}
+
+void		PmergeMe::fillDividedVec(int size, int sizeDividedVec)
+{
+	int	j = 0;
+
+	for (int i = 0; i < size; i++)
 	{
-		if (this->container[i - 1] > this->container[i])
-		{
-			int	temp = this->container[i - 1];
-			this->container[i - 1] = this->container[i];
-			this->container[i] = temp;
-		}
+		this->dividedVec[j].push_back(this->mainVec[i]);
+		if (i % 2 == 1 && i != 0)
+			j++;
 	}
-	this->printVec();
-	step *= 2;
-	if (step == size)
-		return ;
-	handleEnd = (size % step == 0) ? 0 : 1;
-	start = step - 1;
-	divideAndComp(step, size, start, handleEnd);
+	mainVec.erase(mainVec.begin(), mainVec.end());
+	for (int i = 0; i < sizeDividedVec; i++)
+	{
+		this->printVec(this->dividedVec[i]);
+	}
 }
 
-static void swap(int pos, int range)
-{
-	std::vector<int> temp;
-
-
-}
+// static void swap(int pos, int range)
+// {
+// 	std::vector<int> temp;
+//
+//
+// }
 
 void		PmergeMe::fillVec(int argc, char**argv)
 {
@@ -105,24 +108,24 @@ void		PmergeMe::fillVec(int argc, char**argv)
 			{
 				substr = str.substr(0, pos);
 				number = strConvert<int>(substr);
-				this->container.push_back(number);
+				this->mainVec.push_back(number);
 				str.erase(0, pos + 1);
 			}
 			else
 			{
 				number = strConvert<int>(str);
-				this->container.push_back(number);
+				this->mainVec.push_back(number);
 				break ;
 			}
 		}
 	}
 }
 
-void		PmergeMe::printVec()
+void		PmergeMe::printVec(std::vector<int> vec)
 {
-	for (size_t i = 0; i < this->container.size(); i++)
+	for (size_t i = 0; i < vec.size(); i++)
 	{
-		std::cout << this->container[i] << " ";
+		std::cout << vec[i] << " ";
 	}
 	std::cout << std::endl;
 }

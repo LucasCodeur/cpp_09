@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 14:47:29 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/02/24 11:15:53 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/02/26 11:14:48 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,12 @@ class	PmergeMe
 		PmergeMe&	operator= ( const PmergeMe &);
 		void		fordJonhson(void);
 		void		fillVec(int argc, char**argv);
-		void		printVec(void);
-		void		divideAndComp(int step, int size,int start, int handleEnd);
+		void		printVec(std::vector<int> vec);
+		void		divideAndComp(int size, int sizeDividedVec);
+		void		fillDividedVec(int size, int sizeDividedVec);
+		std::vector<int>	mainVec;
+		std::vector<int>*	dividedVec;
 	private:
-		std::vector<int>	container;
-		
 };
 
 template <typename T> T strConvert(std::string& number)
