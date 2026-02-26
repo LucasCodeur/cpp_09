@@ -14,6 +14,7 @@
 # define PMERGEME_HPP
 
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
 #include <stdlib.h>
 #include <vector>
@@ -31,8 +32,9 @@ class	PmergeMe
 		~PmergeMe	(void);
 		PmergeMe&	operator= ( const PmergeMe &);
 		void		fordJonhson(void);
-		void		parsing(int argc, char**argv);
-		void				printVec(void);
+		void		fillVec(int argc, char**argv);
+		void		printVec(void);
+		void		divideAndComp(int step, int size,int start, int handleEnd);
 	private:
 		std::vector<int>	container;
 		
@@ -41,11 +43,11 @@ class	PmergeMe
 template <typename T> T strConvert(std::string& number)
 {
 	T	number_convert = 0;
+	std::stringstream ss(number);
 	
-	char*	end = NULL;
-	number_convert = std::strtod(number.c_str(), &end);
-	// if (*end)
-	// 	throw std::runtime_error("Error: problem inside argument");
+	ss >> number_convert;
+	if (ss.fail())
+		throw std::runtime_error("Error: problem inside argument");
 	return (number_convert);
 }
 

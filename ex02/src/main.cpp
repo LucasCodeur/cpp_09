@@ -16,24 +16,31 @@
 
 static void	t_strtod_error(std::string test);
 static void	t_parsing(int argc, char** argv);
+static void	t_fordjohnson(int argc, char **argv);
 
 int	main(int argc, char** argv)
 {
 	// t_strtod_error("2a4");
-	t_parsing(argc, argv);
+	// t_parsing(argc, argv);
+	t_fordjohnson(argc, argv);
+	
 }
 
-static void	t_strtod_error(std::string test)
+static void	t_fordjohnson(int argc, char **argv)
 {
 	try 
 	{
-		int number = strConvert<int>(test);
-		std::cout << number << std::endl;
+		PmergeMe	test;
+
+		test.fillVec(argc, argv);
+		test.printVec();
+		test.fordJonhson();
 	}
 	catch (std::exception &e)
 	{
 		std::cout << e.what() << std::endl;
 	}
+	
 }
 
 static void	t_parsing(int argc, char** argv)
@@ -42,8 +49,21 @@ static void	t_parsing(int argc, char** argv)
 	{
 		PmergeMe	test;
 
-		test.parsing(argc, argv);
+		test.fillVec(argc, argv);
 		test.printVec();
+	}
+	catch (std::exception &e)
+	{
+		std::cout << e.what() << std::endl;
+	}
+}
+
+static void	t_strtod_error(std::string test)
+{
+	try 
+	{
+		int number = strConvert<int>(test);
+		std::cout << number << std::endl;
 	}
 	catch (std::exception &e)
 	{

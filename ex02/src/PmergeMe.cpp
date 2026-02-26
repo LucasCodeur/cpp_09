@@ -46,12 +46,47 @@ PmergeMe::~PmergeMe (void)
 	// std::cout << "PmergeMe Destructeur called\n";
 }
 
-void		PmergeMe::fordJonhson(void)
+static void		divideAndComp(int step, int size,int start, int handleEnd);
+
+void		PmergeMe::fordJonhson()
 {
-		
+	int	size = this->container.size();
+	if (size < 2)
+		throw std::runtime_error("Error: not enough elements");
+	int	step = 2;
+	int	start = 1;
+	int	handleEnd = (size % step == 0) ? 0 : 1;
+	divideAndComp(step, size, handleEnd);
 }
 
-void		PmergeMe::parsing(int argc, char**argv)
+static void		divideAndComp(int step, int size,int start, int handleEnd)
+{
+	for (size_t i = start; i < this->container.size() - handleEnd; i += step)
+	{
+		if (this->container[i - 1] > this->container[i])
+		{
+			int	temp = this->container[i - 1];
+			this->container[i - 1] = this->container[i];
+			this->container[i] = temp;
+		}
+	}
+	this->printVec();
+	step *= 2;
+	if (step == size)
+		return ;
+	handleEnd = (size % step == 0) ? 0 : 1;
+	start = step - 1;
+	divideAndComp(step, size, start, handleEnd);
+}
+
+static void swap(int pos, int range)
+{
+	std::vector<int> temp;
+
+
+}
+
+void		PmergeMe::fillVec(int argc, char**argv)
 {
 	std::string str;
 	std::string substr;
@@ -87,6 +122,7 @@ void		PmergeMe::printVec()
 {
 	for (size_t i = 0; i < this->container.size(); i++)
 	{
-		std::cout << this->container[i] << std::endl;
+		std::cout << this->container[i] << " ";
 	}
+	std::cout << std::endl;
 }
