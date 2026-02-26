@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 17:16:20 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/02/26 11:27:11 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/02/26 13:38:59 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,34 @@ void		PmergeMe::fordJonhson()
 	int		sizeDividedVec = size / 2;
 	this->dividedVec = new std::vector<int>[sizeDividedVec];
 	divideAndComp(size, sizeDividedVec);
+	PRINT("AFTER DIVIDE")
+	for (int i = 0; i < sizeDividedVec; i++)
+	{
+		this->printVec(this->dividedVec[i]);
+	}
+	fillMainVec(sizeDividedVec, this->dividedVec->size());
+	PRINT("AFTER DIVIDED AND REFILL MAIN VEC");
+	this->printVec(mainVec);
 	delete [] this->dividedVec;
 }
 
 void		PmergeMe::divideAndComp(int size, int sizeDividedVec)
 {
+	int temp = 0;
+	int	sizeVec = 0;
 
 	fillDividedVec(size, sizeDividedVec);
+	PRINT("SORT");
+	for (int i = 0; i < sizeDividedVec; i++)
+	{
+		sizeVec = this->dividedVec[i].size();
+		if (this->dividedVec[i][0] > this->dividedVec[i][1])
+		{
+			temp = this->dividedVec[i][0];
+			this->dividedVec[i][0] = this->dividedVec[i][1];
+			this->dividedVec[i][1] = temp;
+		}
+	}
 	// divideAndComp();
 }
 
@@ -69,16 +90,32 @@ void		PmergeMe::fillDividedVec(int size, int sizeDividedVec)
 {
 	int	j = 0;
 
-	for (int i = 0; i < size; i++)
+	for (int i = 0; i < size ; i++)
 	{
 		this->dividedVec[j].push_back(this->mainVec[i]);
 		if (i % 2 == 1 && i != 0)
 			j++;
 	}
 	mainVec.erase(mainVec.begin(), mainVec.end());
-	for (int i = 0; i < sizeDividedVec; i++)
+}
+
+void		PmergeMe::fillMainVec(int sizeDividedVec, int step)
+{
+	int	temp = 0;
+	int	i = 0;	
+	int	j = 0;
+	PRINT(step);
+	while (j < sizeDividedVec)
 	{
-		this->printVec(this->dividedVec[i]);
+		temp = this->dividedVec[j][i];
+		this->mainVec.push_back(temp);
+		if (i == step - 1)
+		{
+			j++;
+			i = 0;
+		}
+		else
+			i++;
 	}
 }
 
