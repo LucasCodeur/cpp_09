@@ -53,50 +53,86 @@ void		PmergeMe::fordJonhson()
 {
 	int		size = this->mainVec.size();
 	int		sizeDividedVec = size / 2;
+
 	this->dividedVec = new std::vector<int>[sizeDividedVec];
-	divideAndComp(size, sizeDividedVec);
-	PRINT("AFTER DIVIDE")
-	for (int i = 0; i < sizeDividedVec; i++)
-	{
-		this->printVec(this->dividedVec[i]);
-	}
-	fillMainVec(sizeDividedVec, this->dividedVec->size());
-	PRINT("AFTER DIVIDED AND REFILL MAIN VEC");
+	divideAndComp(size, sizeDividedVec, 2, true);	
+	PRINT("After Divide And Comp")
 	this->printVec(mainVec);
 	delete [] this->dividedVec;
 }
 
-void		PmergeMe::divideAndComp(int size, int sizeDividedVec)
+void		PmergeMe::divideAndComp(int size, int sizeDividedVec, int endPacket, bool firstIteration)
 {
-	int temp = 0;
-	int	sizeVec = 0;
-
-	fillDividedVec(size, sizeDividedVec);
-	PRINT("SORT");
+	fillDividedVec(size, endPacket);
+	PRINT("AFTER FILL DIVIDED VEC");
 	for (int i = 0; i < sizeDividedVec; i++)
 	{
-		sizeVec = this->dividedVec[i].size();
-		if (this->dividedVec[i][0] > this->dividedVec[i][1])
-		{
-			temp = this->dividedVec[i][0];
-			this->dividedVec[i][0] = this->dividedVec[i][1];
-			this->dividedVec[i][1] = temp;
-		}
+		this->printVec(this->dividedVec[i]);
 	}
-	// divideAndComp();
+	endPacket = this->dividedVec->size();
+	swap(sizeDividedVec, endPacket, firstIteration);	
+	PRINT("After Swap, SubdividedVec")
+	for (int i = 0; i < sizeDividedVec; i++)
+	{
+		this->printVec(this->dividedVec[i]);
+	}
+	endPacket *= 2;
+	fillMainVec(sizeDividedVec, this->dividedVec->size());
+	if (endPacket >= size / 2)
+		return ;
+	PRINT("NEW ITERATION");
+	PRINT("SizeDividedVec");
+	PRINT(sizeDividedVec / 2);
+	PRINT("Endpacket");
+	PRINT(endPacket);
+	divideAndComp(size, sizeDividedVec / 2, endPacket, false);
 }
 
-void		PmergeMe::fillDividedVec(int size, int sizeDividedVec)
+void		PmergeMe::fillDividedVec(int size, int endPacket)
 {
 	int	j = 0;
+	int	handleOdd = (size % 2 == 0) ? 0 : 1;
+	int	sizeDividedVec = size - handleOdd;
 
-	for (int i = 0; i < size ; i++)
+	for (int i = 0; i < size; i++)
 	{
 		this->dividedVec[j].push_back(this->mainVec[i]);
-		if (i % 2 == 1 && i != 0)
+		if (i % endPacket == 0 && i != 0)
+		{
+			PRINT("ENDPACKET modulo i");
+			PRINT("i")
+			PRINT(i);
+			PRINT(endPacket % i);
 			j++;
-	}
+		}
+	}	
 	mainVec.erase(mainVec.begin(), mainVec.end());
+}
+
+void	PmergeMe::swap(int sizeDividedVec, int endPacket, bool firstIteration)
+{
+	int temp = 0;
+
+	if (firstIteration == false)
+	{
+		for (int i = 0; i < sizeDividedVec - 1; i++)
+		{
+			if (this->dividedVec[i][endPacket - 1] > this->dividedVec[i + 1][endPacket - 1])
+				this->dividedVec[i].swap(this->dividedVec[i + 1]);
+		}
+	}
+	else
+	{
+		for (int i = 0; i < sizeDividedVec; i++)
+		{
+			if (this->dividedVec[i][0] > this->dividedVec[i][1])
+			{
+				temp = this->dividedVec[i][0];
+				this->dividedVec[i][0] = this->dividedVec[i][1];
+				this->dividedVec[i][1] = temp;
+			}
+		}
+	}
 }
 
 void		PmergeMe::fillMainVec(int sizeDividedVec, int step)
@@ -111,6 +147,7 @@ void		PmergeMe::fillMainVec(int sizeDividedVec, int step)
 		this->mainVec.push_back(temp);
 		if (i == step - 1)
 		{
+			this->dividedVec[j].erase(this->dividedVec[j].begin(), this->dividedVec[j].end());
 			j++;
 			i = 0;
 		}
@@ -118,13 +155,6 @@ void		PmergeMe::fillMainVec(int sizeDividedVec, int step)
 			i++;
 	}
 }
-
-// static void swap(int pos, int range)
-// {
-// 	std::vector<int> temp;
-//
-//
-// }
 
 void		PmergeMe::fillVec(int argc, char**argv)
 {

@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 14:47:29 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/02/26 13:37:47 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/02/26 11:14:48 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,10 @@ class	PmergeMe
 		void		fordJonhson(void);
 		void		fillVec(int argc, char**argv);
 		void		printVec(std::vector<int> vec);
-		void		divideAndComp(int size, int sizeDividedVec);
-		void		fillDividedVec(int size, int sizeDividedVec);
-		void		fillMainVec(int sizeDividedVec, int step);
+		void		divideAndComp(int size, int sizeDividedVec, int endPacket, bool firstIteration);
+		void		fillDividedVec(int size, int endPacket);
+		void		fillMainVec(int sizeMainVec, int step);
+		void		swap(int sizeDividedVec, int endPacket, bool firstIteration);
 		std::vector<int>	mainVec;
 		std::vector<int>*	dividedVec;
 	private:
