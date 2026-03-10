@@ -33,8 +33,6 @@ static void	t_fordjohnson(int argc, char **argv)
 		PmergeMe	test;
 
 		test.fillVec(argc, argv);
-		PRINT("MAIN VEC")
-		test.printVec(test.mainVec);
 		test.fordJonhson();
 	}
 	catch (std::exception &e)

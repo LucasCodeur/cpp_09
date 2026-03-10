@@ -55,23 +55,24 @@ void		PmergeMe::fordJonhson()
 	int		sizeDividedVec = size / 2;
 
 	this->dividedVec = new std::vector<int>[sizeDividedVec];
+	PRINT("\n");
 	divideAndComp(size, sizeDividedVec, 2, true);	
-	PRINT("After Divide And Comp")
-	this->printVec(mainVec);
 	delete [] this->dividedVec;
 }
 
 void		PmergeMe::divideAndComp(int size, int sizeDividedVec, int endPacket, bool firstIteration)
 {
+	PRINT("\nMAIN VEC\n");
+	this->printVec(this->mainVec);
+	PRINT("\n");
 	fillDividedVec(size, endPacket);
-	PRINT("AFTER FILL DIVIDED VEC");
 	for (int i = 0; i < sizeDividedVec; i++)
 	{
 		this->printVec(this->dividedVec[i]);
 	}
-	endPacket = this->dividedVec->size();
+	PRINT("\n");
+	// endPacket = this->dividedVec->size();
 	swap(sizeDividedVec, endPacket, firstIteration);	
-	PRINT("After Swap, SubdividedVec")
 	for (int i = 0; i < sizeDividedVec; i++)
 	{
 		this->printVec(this->dividedVec[i]);
@@ -80,30 +81,24 @@ void		PmergeMe::divideAndComp(int size, int sizeDividedVec, int endPacket, bool 
 	fillMainVec(sizeDividedVec, this->dividedVec->size());
 	if (endPacket >= size / 2)
 		return ;
-	PRINT("NEW ITERATION");
-	PRINT("SizeDividedVec");
-	PRINT(sizeDividedVec / 2);
-	PRINT("Endpacket");
-	PRINT(endPacket);
-	divideAndComp(size, sizeDividedVec / 2, endPacket, false);
+	divideAndComp(size, sizeDividedVec / 2 + 1, endPacket, false);
 }
 
-void		PmergeMe::fillDividedVec(int size, int endPacket)
+void		PmergeMe::fillDividedVec(int size, int nbInsidePacket)
 {
 	int	j = 0;
-	int	handleOdd = (size % 2 == 0) ? 0 : 1;
-	int	sizeDividedVec = size - handleOdd;
-
+	int	nbAddInsidePacket = 0;
+	// int	handleOdd = (size % 2 == 0) ? 0 : 1;
+	int	handleOdd = 0;
+	// int	sizeDividedVec = size - handleOdd;
 	for (int i = 0; i < size; i++)
 	{
 		this->dividedVec[j].push_back(this->mainVec[i]);
-		if (i % endPacket == 0 && i != 0)
+		nbAddInsidePacket++;
+		if (nbAddInsidePacket == nbInsidePacket)
 		{
-			PRINT("ENDPACKET modulo i");
-			PRINT("i")
-			PRINT(i);
-			PRINT(endPacket % i);
 			j++;
+			nbAddInsidePacket = 0;
 		}
 	}	
 	mainVec.erase(mainVec.begin(), mainVec.end());
@@ -115,7 +110,7 @@ void	PmergeMe::swap(int sizeDividedVec, int endPacket, bool firstIteration)
 
 	if (firstIteration == false)
 	{
-		for (int i = 0; i < sizeDividedVec - 1; i++)
+		for (int i = 0; i < sizeDividedVec && this->dividedVec[i + 1].size() == static_cast<size_t>(endPacket); i += 2)
 		{
 			if (this->dividedVec[i][endPacket - 1] > this->dividedVec[i + 1][endPacket - 1])
 				this->dividedVec[i].swap(this->dividedVec[i + 1]);
@@ -140,7 +135,7 @@ void		PmergeMe::fillMainVec(int sizeDividedVec, int step)
 	int	temp = 0;
 	int	i = 0;	
 	int	j = 0;
-	PRINT(step);
+
 	while (j < sizeDividedVec)
 	{
 		temp = this->dividedVec[j][i];

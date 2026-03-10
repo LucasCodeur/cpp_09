@@ -21,11 +21,12 @@
 
 #define PRINT(x) std::cout << x << std::endl;
 
-#define DATABASE "data.csv"
-
 class	PmergeMe
 {
 	public:
+		std::vector<int>	mainVec;
+		std::vector<int>*	dividedVec;
+
 		PmergeMe	(void);
 		PmergeMe	(int _sizeStr);
 		PmergeMe	(const PmergeMe &);
@@ -38,8 +39,6 @@ class	PmergeMe
 		void		fillDividedVec(int size, int endPacket);
 		void		fillMainVec(int sizeMainVec, int step);
 		void		swap(int sizeDividedVec, int endPacket, bool firstIteration);
-		std::vector<int>	mainVec;
-		std::vector<int>*	dividedVec;
 	private:
 };
 
