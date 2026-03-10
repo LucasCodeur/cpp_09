@@ -136,7 +136,7 @@ void		PmergeMe::fillMainVec(int sizeDividedVec, int step)
 	int	i = 0;	
 	int	j = 0;
 
-	while (j < sizeDividedVec)
+	while (j < sizeDividedVec - 1)
 	{
 		temp = this->dividedVec[j][i];
 		this->mainVec.push_back(temp);
