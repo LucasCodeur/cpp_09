@@ -35,10 +35,10 @@ class	PmergeMe
 		void		fordJonhson(void);
 		void		fillVec(int argc, char**argv);
 		void		printVec(std::vector<int> vec);
-		void		divideAndComp(int size, int sizeDividedVec, int endPacket, bool firstIteration);
-		void		fillDividedVec(int size, int endPacket);
+		void		divideAndComp(int size, int sizeDividedVec, int nbInsidePacket, bool firstIteration);
+		void		fillDividedVec(int size, int nbInsidePacket);
 		void		fillMainVec(int sizeMainVec, int step);
-		void		swap(int sizeDividedVec, int endPacket, bool firstIteration);
+		void		swap(int sizeDividedVec, int nbInsidePacket);
 	private:
 };
 
