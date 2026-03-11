@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 11:09:13 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/02/26 10:50:53 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/02/26 10:49:12 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ static void	t_parsing(int argc, char** argv)
 		PmergeMe	test;
 
 		test.fillVec(argc, argv);
-		test.printVec(test.mainVec);
 	}
 	catch (std::exception &e)
 	{
