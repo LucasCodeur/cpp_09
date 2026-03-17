@@ -26,6 +26,7 @@ class	PmergeMe
 	public:
 		std::vector<int>	mainVec;
 		std::vector<int>*	dividedVec;
+		int					sizeDividedVec;
 
 		PmergeMe	(void);
 		PmergeMe	(int _sizeStr);
@@ -38,6 +39,7 @@ class	PmergeMe
 		void		divideAndComp(int size, int sizeDividedVec, int nbInsidePacket, bool firstIteration);
 		void		fillDividedVec(int size, int nbInsidePacket);
 		void		fillMainVec(int sizeMainVec, int step);
+		void		PushPacket(std::vector<int>* vect, int sizeDividedVec, int nbPacket);
 		void		swap(int sizeDividedVec, int nbInsidePacket);
 	private:
 };
