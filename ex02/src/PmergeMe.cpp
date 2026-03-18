@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 17:16:20 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/03/18 18:11:06 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/03/18 18:28:11 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,13 +53,13 @@ void		PmergeMe::fordJonhson()
 {
 	int	sizeDividedVec;
 	int	size = this->mainVec.size();
+	this->dividedVec = NULL;
 
 	if (size % 2 == 0)
 		sizeDividedVec = size / 2;
 	else
 		sizeDividedVec = size / 2 + 1;
 	divideAndComp(size, 1, sizeDividedVec);
-	delete [] this->dividedVec;
 }
 
 void		PmergeMe::divideAndComp(int size, int nbInsidePacket, size_t sizeDividedVec)
@@ -101,19 +101,31 @@ void		PmergeMe::divideAndComp(int size, int nbInsidePacket, size_t sizeDividedVe
 	nbInsidePacket *= 2;
 	if (nbInsidePacket > size / 2)
 		return ;
-	delete [] this->dividedVec;
-	divideAndComp(size,  nbInsidePacket, sizeDividedVec / 2);
+	// this->fillMainVec(sizeDividedVec);
+	if (nbInsidePacket > 1)
+	{
+		delete [] this->dividedVec;
+		if (sizeDividedVec % 2 == 0)
+			sizeDividedVec /= 2;
+		else
+		{
+			sizeDividedVec /= 2;
+			sizeDividedVec++;
+		}
+	}
+	
+	divideAndComp(size,  nbInsidePacket, sizeDividedVec);
 
-	std::vector<int> pend;
-	this->PushPacket(&this->mainVec, sizeDividedVec, 2);
-
-	PRINT("DIVIDE AND COMP: Main vec : after pushPacket inside main");
-	printVec(this->mainVec);
-
-
-	fillPend(&pend, sizeDividedVec);
-	PRINT("DIVIDE AND COMP: Main vec : after pushPacket inside pend");
-	printVec(pend);
+	// std::vector<int> pend;
+	// this->PushPacket(&this->mainVec, sizeDividedVec, 2);
+	//
+	// PRINT("DIVIDE AND COMP: Main vec : after pushPacket inside main");
+	// printVec(this->mainVec);
+	//
+	//
+	// fillPend(&pend, sizeDividedVec);
+	// PRINT("DIVIDE AND COMP: Main vec : after pushPacket inside pend");
+	// printVec(pend);
 }
 
 void	PmergeMe::fillPend(std::vector<int>* pend, size_t sizeDividedVec)
@@ -183,7 +195,7 @@ void	PmergeMe::swap(int sizeDividedVec, int nbInsidePacket)
 	}
 }
 
-void		PmergeMe::fillMainVec(size_t sizeDividedVec, int nbPacket)
+void		PmergeMe::fillMainVec(size_t sizeDividedVec)
 {
 	for (size_t j = 0; j <= sizeDividedVec; j++)
 	{

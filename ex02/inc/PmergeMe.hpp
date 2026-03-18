@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 14:47:29 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/03/18 18:08:34 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/03/18 18:19:04 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ class	PmergeMe
 		void		printVec(std::vector<int> vec);
 		void		divideAndComp(int size, int nbInsidePacket, size_t sizeDividedVec);
 		void		fillDividedVec(int size, int nbInsidePacket, size_t* sizeDividedVec);
-		void		fillMainVec(size_t sizeMainVec, int step);
+		void		fillMainVec(size_t sizeDividedVec);
 		void		PushPacket(std::vector<int>* vect, int sizeDividedVec, int nbPacketToPush);
 		void		swap(int sizeDividedVec, int nbInsidePacket);
 		void		fillPend(std::vector<int>* pend, size_t sizeDividedVec);
