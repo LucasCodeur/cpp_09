@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 17:16:20 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/03/18 18:28:11 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/03/19 16:57:36 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,92 +59,114 @@ void		PmergeMe::fordJonhson()
 		sizeDividedVec = size / 2;
 	else
 		sizeDividedVec = size / 2 + 1;
+
+	this->originalSizeDividedVec = sizeDividedVec;
+	this->dividedVec = new std::vector<int>[sizeDividedVec];
 	divideAndComp(size, 1, sizeDividedVec);
+	delete [] this->dividedVec;
 }
 
-void		PmergeMe::divideAndComp(int size, int nbInsidePacket, size_t sizeDividedVec)
+void		PmergeMe::divideAndComp(size_t size, size_t nbInsidePacket, size_t sizeDividedVec)
 {
+	int	oldSizeDividedVec;
 	if (nbInsidePacket > 1)
 	{
-		this->dividedVec = new std::vector<int>[sizeDividedVec];
+		this->cleanDividedVec();
 		this->fillDividedVec(size, nbInsidePacket, &sizeDividedVec);
-		PRINT("DIVIDE AND COMP: Divided Vec : after first divided vec");
-		printArrayVecs(sizeDividedVec);
-	}
-
-	if (nbInsidePacket > 1)
-	{
-		PRINT("DIVIDE AND COMP: Divided Vec : before swap");
-		printArrayVecs(sizeDividedVec);
+		oldSizeDividedVec = sizeDividedVec;
+		// PRINT("DIVIDE AND COMP: Divided Vec : after first divided vec");
+		// printArrayVecs(sizeDividedVec);
 	}
 	else
 	{
-		PRINT("DIVIDE AND COMP: Main vec : before swap");
-		printVec(this->mainVec);
+		// PRINT("DIVIDE AND COMP: Main vec : before swap");
+		// printVec(this->mainVec);
 	}
 
-	swap(sizeDividedVec, nbInsidePacket);
+	this->swap(sizeDividedVec, nbInsidePacket);
+	this->fillMainVec(sizeDividedVec);
 
 	if (nbInsidePacket > 1)
 	{
-		PRINT("DIVIDE AND COMP: Divided Vec : after swap");
-		printArrayVecs(sizeDividedVec);
-		PRINT("DIVIDE AND COMP: Main Vec : after swap");
-		printVec(this->mainVec);
+		// PRINT("DIVIDE AND COMP: Divided Vec : after swap");
+		// printArrayVecs(sizeDividedVec);
+		// PRINT("DIVIDE AND COMP: Main Vec : after swap");
+		// printVec(this->mainVec);
 	}
 	else
 	{
-		PRINT("DIVIDE AND COMP: Main vec : after swap");
-		printVec(this->mainVec);
+		// PRINT("DIVIDE AND COMP: Main vec : after swap");
+		// printVec(this->mainVec);
 	}
 	
 	nbInsidePacket *= 2;
 	if (nbInsidePacket > size / 2)
 		return ;
-	// this->fillMainVec(sizeDividedVec);
-	if (nbInsidePacket > 1)
-	{
-		delete [] this->dividedVec;
-		if (sizeDividedVec % 2 == 0)
-			sizeDividedVec /= 2;
-		else
-		{
-			sizeDividedVec /= 2;
-			sizeDividedVec++;
-		}
-	}
-	
+
 	divideAndComp(size,  nbInsidePacket, sizeDividedVec);
 
-	// std::vector<int> pend;
-	// this->PushPacket(&this->mainVec, sizeDividedVec, 2);
-	//
+	PRINT("\n");
+	PRINT("\n");
+	PRINT("SECOND PARTY OF THE ALGO");
+	PRINT("\n");
+	PRINT("\n");
+
+	std::vector<int> pend;
+
+	this->cleanDividedVec();
+
+	// PRINT("DIVIDED AND COMP: Just before fill divided vec");
+	// this->printArrayVecs(sizeDividedVec);
+
+	this->fillDividedVec(size, nbInsidePacket, &sizeDividedVec);
+
+	PRINT("DIVIDE AND COMP: after creation pend and before push packet");
+	this->printArrayVecs(sizeDividedVec);
+	PRINT("\n");
+
+	this->PushPacket(&this->mainVec, sizeDividedVec, 2, nbInsidePacket);
+
 	// PRINT("DIVIDE AND COMP: Main vec : after pushPacket inside main");
 	// printVec(this->mainVec);
-	//
-	//
-	// fillPend(&pend, sizeDividedVec);
-	// PRINT("DIVIDE AND COMP: Main vec : after pushPacket inside pend");
-	// printVec(pend);
-}
 
-void	PmergeMe::fillPend(std::vector<int>* pend, size_t sizeDividedVec)
-{
-	PRINT("FILL PEND INSIDE");
+
 	size_t	i = 0;
 
 	while (this->dividedVec[i].size() == 0)
 	{
-		PRINT("FILL PEND : Increment");
+		// PRINT("FILL PEND : Increment");
 
 		i++;
 	}
-	PRINT("FILL PEND: sizeDivided vec :");
-	PRINT(sizeDividedVec);
+	// PRINT("FILL PEND: sizeDivided vec :");
+	// PRINT(sizeDividedVec);
+	while (i < sizeDividedVec && this->dividedVec[i].size() == nbInsidePacket)
+	{
+		// PRINT("FILL PEND : pushpacket");
+		this->PushPacket(&pend, sizeDividedVec, 1, nbInsidePacket);
+		i += 2;
+	}
+	PRINT("DIVIDE AND COMP: Main vec : after pushPacket inside pend");
+	printVec(pend);
+}
+
+void	PmergeMe::fillPend(std::vector<int>* pend, size_t sizeDividedVec, size_t nbInsidePacket)
+{
+	// PRINT("FILL PEND INSIDE");
+	size_t	i = 0;
+
+	while (this->dividedVec[i].size() == 0)
+	{
+		// PRINT("FILL PEND : Increment");
+
+		i++;
+	}
+	// PRINT("FILL PEND: sizeDivided vec :");
+	// PRINT(sizeDividedVec);
 	while (i < sizeDividedVec)
 	{
-		PRINT("FILL PEND : pushpacket");
-		this->PushPacket(pend, sizeDividedVec, 1);
+		// PRINT("FILL PEND : pushpacket");
+		this->PushPacket(pend, sizeDividedVec, 1, nbInsidePacket);
 		i += 2;
 	}
 }
@@ -164,8 +186,24 @@ void		PmergeMe::fillDividedVec(int size, int nbInsidePacket, size_t* sizeDivided
 			nbAddInsidePacket = 0;
 		}
 	}
-	*sizeDividedVec = j;
+	*sizeDividedVec = ++j;
 	mainVec.erase(mainVec.begin(), mainVec.end());
+}
+
+void	PmergeMe::cleanDividedVec()
+{
+	int	sizeDividedVec;
+	int	size = this->mainVec.size();
+
+	sizeDividedVec =  size / 2 + 1;
+
+	// PRINT("CLEAN DIVIDED VEC: SizeDividedVec");
+	// PRINT(sizeDividedVec);
+
+	for (int i = 0; i < this->originalSizeDividedVec; i++)
+	{
+		this->dividedVec[i].erase(dividedVec[i].begin(), dividedVec[i].end());
+	}
 }
 
 void	PmergeMe::swap(int sizeDividedVec, int nbInsidePacket)
@@ -197,7 +235,9 @@ void	PmergeMe::swap(int sizeDividedVec, int nbInsidePacket)
 
 void		PmergeMe::fillMainVec(size_t sizeDividedVec)
 {
-	for (size_t j = 0; j <= sizeDividedVec; j++)
+	// PRINT("FILL MAIN VEC");
+	// PRINT(sizeDividedVec);
+	for (size_t j = 0; j < sizeDividedVec; j++)
 	{
 		for (size_t i = 0; i < this->dividedVec[j].size(); i++)
 			this->mainVec.push_back(this->dividedVec[j][i]);
@@ -205,16 +245,40 @@ void		PmergeMe::fillMainVec(size_t sizeDividedVec)
 	}
 }
 
-void		PmergeMe::PushPacket(std::vector<int>* vect, int sizeDividedVec, int nbPacket)
+void		PmergeMe::PushPacket(std::vector<int>* vect, int sizeDividedVec, int nbPacket, size_t nbByPackets)
 {
-	for (int j = 0; j < sizeDividedVec; j++)
+	int	nbPacketPush = 0;
+
+	// PRINT("PUSHPACKET out of the for");
+	int	i = 0;
+	while (i < sizeDividedVec && this->dividedVec[i].size() == 0)
+		i++;
+
+	for (int j = i; j < sizeDividedVec; j++)
 	{
-		if (nbPacket != 0 && j == nbPacket)
+		// PRINT("PUSHPACKET Content of divided vec");
+		// this->printVec(this->dividedVec[j]);
+		// PRINT("PUSHPACKET: inside the for");
+		// PRINT("PUSHPACKET");
+		// PRINT("This packet dividedvec[j]");
+		// PRINT(this->dividedVec[j].size());
+		// PRINT("NB BY PACKETS");
+		// PRINT(nbByPackets);
+		if ((nbPacket != 0 && nbPacketPush == nbPacket) || this->dividedVec[j].size() != nbByPackets)
+		{
+			// PRINT("PUSHPACKET: inside the return");
 			return ;
+		}
 		if (this->dividedVec[j].size() == 0)
 			continue ;
+		// PRINT("PUSHPACKET: just before push inside vect");
 		for (size_t i = 0; i < this->dividedVec[j].size(); i++)
+		{
+
+			// PRINT("PUSHPACKET: Inside for to push inside vect");
 			vect->push_back(this->dividedVec[j][i]);
+		}
+		nbPacketPush++;
 		this->dividedVec[j].erase(this->dividedVec[j].begin(), this->dividedVec[j].end());
 	}
 }
@@ -260,16 +324,17 @@ void		PmergeMe::printVec(std::vector<int> vec)
 			std::cout << vec[i] << " ";
 		}
 	}
-	else
-		std::cout << "Nothing inside bro";
+	// else
+	// 	std::cout << "Nothing inside bro";
 	std::cout << std::endl;
 }
 
 void	PmergeMe::printArrayVecs(int sizeDividedVec)
 {
-	for (int i = 0; i <= sizeDividedVec; i++)
+	for (int i = 0; i < sizeDividedVec; i++)
 	{
 		// std::cout << "Step :" << i << std::endl;
-		this->printVec(this->dividedVec[i]);
+		if (this->dividedVec[i].size() != 0)
+			this->printVec(this->dividedVec[i]);
 	}
 }

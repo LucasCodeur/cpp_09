@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 14:47:29 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/03/18 18:19:04 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/03/19 16:57:38 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ class	PmergeMe
 	public:
 		std::vector<int>	mainVec;
 		std::vector<int>*	dividedVec;
+		int					originalSizeDividedVec;
 
 		PmergeMe	(void);
 		PmergeMe	(int _sizeStr);
@@ -35,12 +36,13 @@ class	PmergeMe
 		void		fordJonhson(void);
 		void		fillVec(int argc, char**argv);
 		void		printVec(std::vector<int> vec);
-		void		divideAndComp(int size, int nbInsidePacket, size_t sizeDividedVec);
+		void		cleanDividedVec();
+		void		divideAndComp(size_t size, size_t nbInsidePacket, size_t sizeDividedVec);
 		void		fillDividedVec(int size, int nbInsidePacket, size_t* sizeDividedVec);
 		void		fillMainVec(size_t sizeDividedVec);
-		void		PushPacket(std::vector<int>* vect, int sizeDividedVec, int nbPacketToPush);
+		void		PushPacket(std::vector<int>* vect, int sizeDividedVec, int nbPacketToPush, size_t nbByPackets);
 		void		swap(int sizeDividedVec, int nbInsidePacket);
-		void		fillPend(std::vector<int>* pend, size_t sizeDividedVec);
+		void		fillPend(std::vector<int>* pend, size_t sizeDividedVec, size_t nbInsidePacket);
 		void		resizeDividedArrayVec();
 		void		printArrayVecs(int sizeDividedVec);
 	private:
