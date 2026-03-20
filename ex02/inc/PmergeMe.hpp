@@ -36,11 +36,12 @@ class	PmergeMe
 		void		fordJonhson(void);
 		void		fillVec(int argc, char**argv);
 		void		printVec(std::vector<int> vec);
-		void		cleanDividedVec();
+		void		cleanDividedVec(int sizeDividedVec);
 		void		divideAndComp(size_t size, size_t nbInsidePacket, size_t sizeDividedVec);
 		void		fillDividedVec(int size, int nbInsidePacket, size_t* sizeDividedVec);
 		void		fillMainVec(size_t sizeDividedVec);
-		void		PushPacket(std::vector<int>* vect, int sizeDividedVec, int nbPacketToPush, size_t nbByPackets);
+		void		fillmainVecAndPend(std::vector<int>* pend, size_t sizeDividedVec, size_t nbInsidePacket);
+		void		binaryJacobsthalNbsInsert(std::vector<int>& pend, int jacobsthalNumber, int nbInsidePacket);
 		void		swap(int sizeDividedVec, int nbInsidePacket);
 		void		fillPend(std::vector<int>* pend, size_t sizeDividedVec, size_t nbInsidePacket);
 		void		resizeDividedArrayVec();
