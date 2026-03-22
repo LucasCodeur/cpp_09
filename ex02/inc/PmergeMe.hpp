@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 14:47:29 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/03/19 16:57:38 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/03/22 10:15:33 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,11 @@
 #include <stdlib.h>
 #include <vector>
 
-#define PRINT(x) std::cout << x << std::endl;
-
 class	PmergeMe
 {
 	public:
 		std::vector<int>	mainVec;
+		std::vector<int>	remaining;
 		std::vector<int>*	dividedVec;
 		int					originalSizeDividedVec;
 
