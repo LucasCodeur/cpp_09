@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 17:16:20 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/03/22 10:45:35 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/03/22 11:56:27 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ PmergeMe::~PmergeMe (void)
 {
 	// std::cout << "PmergeMe Destructeur called\n";
 }
+
+void debug_vec(const std::vector<int>& v);
 
 static void		divideAndComp();
 
@@ -153,6 +155,7 @@ void		PmergeMe::divideAndComp(size_t size, size_t nbInsidePacket, size_t sizeDiv
 void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, int jacobsthalNumber, int nbInsidePacket)
 {
 	size_t	sizePend = pend.size();
+	mainVec.reserve(mainVec.size() + sizePend + 10);
 
 	if (sizePend == 0)
 		return ;
@@ -172,7 +175,22 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, int jacobsthalN
 		PRINT(temp, WHITE);
 		PRINT("\n", RESET);
 
-		std::vector<int>::iterator it = std::lower_bound(this->mainVec.begin(), this->mainVec.end(), temp);
+		PRINT("main vec: ", GREEN);
+		this->printVec(this->mainVec);
+		PRINT("\n", RESET);
+		
+		PRINT("main begin :", GREEN);
+		PRINT(*this->mainVec.begin(), WHITE);
+
+		PRINT("main end :", GREEN);
+		PRINT(*(this->mainVec.begin() + this->mainVec.size()), WHITE);
+
+		PRINT("main size : ", GREEN);
+		PRINT(this->mainVec.size(), WHITE);
+
+		PRINT("\n", RESET);
+
+		std::vector<int>::iterator it = std::lower_bound(this->mainVec.begin(), this->mainVec.begin() + this->mainVec.size(), temp);
 		PRINT("BinaryJacob: result lower bound", BLUE);
 		PRINT(*it, WHITE);
 		PRINT("\n", RESET);
@@ -186,20 +204,21 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, int jacobsthalN
 			// FIXME: problem how to insert since the pend inside main
 			for (int k = 0; k < nbInsidePacket; k++)
 			{
-					int posInPend = increment - nbInsidePacket + 1;
-					PRINT("BinaryJacob: Inside for to add inside VecMain: posInPend: ", GREEN);
-					PRINT(posInPend, WHITE);
-					PRINT("\n", RESET);
+					// int posInPend = increment - nbInsidePacket + 1;
+					// PRINT("BinaryJacob: Inside for to add inside VecMain: posInPend: ", GREEN);
+					// PRINT(posInPend, WHITE);
+					// PRINT("\n", RESET);
 
-					int temp = pend[posInPend];
+					int temp = pend[increment - k];
 					PRINT("BinaryJacob: Inside for to inside main : temp :", BLUE);
 					PRINT(temp, WHITE);
 					PRINT("\n", RESET);
 
-					this->mainVec.insert(it - nbInsidePacket, temp);
-					pend.erase(pend.begin() + posInPend);
+					this->mainVec.insert(it - nbInsidePacket + 1, temp);
+					pend.erase(pend.begin() + increment - k);
 			}
 		}
+		debug_vec(this->mainVec);
 		PRINT("BinaryJaocb: pend", BLUE);
 		printVec(pend);
 		PRINT("\n", RESET);
@@ -209,6 +228,7 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, int jacobsthalN
 		PRINT("\n", RESET);
 
 		count--;
+		PRINT("----------------------------------------------------------------------------------\n", RED);
 	}
 	return ;
 }
@@ -383,5 +403,22 @@ void	PmergeMe::printArrayVecs(int sizeDividedVec)
 		// std::cout << "Step :" << i << std::endl;
 		if (this->dividedVec[i].size() != 0)
 			this->printVec(this->dividedVec[i]);
+	}
+}
+
+void debug_vec(const std::vector<int>& v)
+{
+	PRINT("size: ", RED);
+	PRINT(v.size(), WHITE)
+	PRINT("capacity: ", RED);
+	PRINT(v.capacity(), WHITE);
+	PRINT("data ptr: ", RED);
+	PRINT((void*)v.data(), WHITE);
+	for (size_t i=0; i<v.capacity(); i++) 
+	{
+		PRINT("index ", RED);
+		PRINT(i, WHITE);
+		PRINT(": ", RED);
+		PRINT(v[i], WHITE);
 	}
 }
