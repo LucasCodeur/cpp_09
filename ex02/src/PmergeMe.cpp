@@ -165,9 +165,9 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, int jacobsthalN
 	PRINT(nbInsidePacket, WHITE);
 	for (size_t j = 0; count != 0 && pend.size() != 0; j += nbInsidePacket)	
 	{
-		size_t	increment = ((jacobsthalNumber - 1) * nbInsidePacket) - 1 - j;
+		int	increment = ((jacobsthalNumber - 1) * nbInsidePacket) - 1 - j;
 
-		if (increment < 0 || increment >= pend.size())
+		if (increment < 0 || increment >= static_cast<int>(pend.size()))
 			return ;
 
 		int	temp = pend[increment];
@@ -183,42 +183,74 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, int jacobsthalN
 		PRINT(*this->mainVec.begin(), WHITE);
 
 		PRINT("main end :", GREEN);
-		PRINT(*(this->mainVec.begin() + this->mainVec.size()), WHITE);
+		PRINT(*(this->mainVec.end() - 1), WHITE);
 
 		PRINT("main size : ", GREEN);
 		PRINT(this->mainVec.size(), WHITE);
 
 		PRINT("\n", RESET);
+		// for (size_t i = 0; i < this->mainVec.size(); i++)
+		// {
+		// 	PRINT("Jacob: mainvec[i]: ", RED);
+		// 	PRINT(this->mainVec[i], WHITE);
+		// }
 
-		std::vector<int>::iterator it = std::lower_bound(this->mainVec.begin(), this->mainVec.begin() + this->mainVec.size(), temp);
+		PRINT("Jacob: Jacobsthal number: ", GREEN);
+		PRINT(jacobsthalNumber, WHITE);
+
+		int born_end = jacobsthalNumber * nbInsidePacket - 1 - j;
+
+		PRINT("Jacob: born end: ", YELLOW);
+		PRINT(born_end, WHITE);
+		std::vector<int>::iterator it = std::lower_bound(this->mainVec.begin(), this->mainVec.begin() + born_end, temp);
+
 		PRINT("BinaryJacob: result lower bound", BLUE);
 		PRINT(*it, WHITE);
 		PRINT("\n", RESET);
 
-		if (*it > temp)
-		{
 			PRINT("BinaryJacob: before for to add inside Vecmain: increment: ", GREEN);
 			PRINT(increment, WHITE);
 			PRINT("\n", RESET);
 
-			// FIXME: problem how to insert since the pend inside main
-			for (int k = 0; k < nbInsidePacket; k++)
+			if (*it > temp)
 			{
-					// int posInPend = increment - nbInsidePacket + 1;
-					// PRINT("BinaryJacob: Inside for to add inside VecMain: posInPend: ", GREEN);
-					// PRINT(posInPend, WHITE);
-					// PRINT("\n", RESET);
+				for (int k = 0; k < nbInsidePacket; k++)
+				{
+						// int posInPend = increment - nbInsidePacket + 1;
+						// PRINT("BinaryJacob: Inside for to add inside VecMain: posInPend: ", GREEN);
+						// PRINT(posInPend, WHITE);
+						// PRINT("\n", RESET);
 
-					int temp = pend[increment - k];
-					PRINT("BinaryJacob: Inside for to inside main : temp :", BLUE);
-					PRINT(temp, WHITE);
-					PRINT("\n", RESET);
+						int temp = pend[increment - k];
+						PRINT("BinaryJacob: Inside for to inside main : temp :", BLUE);
+						PRINT(temp, WHITE);
+						PRINT("\n", RESET);
 
-					this->mainVec.insert(it - nbInsidePacket + 1, temp);
-					pend.erase(pend.begin() + increment - k);
+						this->mainVec.insert(it - nbInsidePacket + 1, temp);
+						pend.erase(pend.begin() + increment - k);
+				}
 			}
-		}
-		debug_vec(this->mainVec);
+			else
+			{
+				for (int k = 0; k < nbInsidePacket; k++)
+				{
+						// int posInPend = increment - nbInsidePacket + 1;
+						// PRINT("BinaryJacob: Inside for to add inside VecMain: posInPend: ", GREEN);
+						// PRINT(posInPend, WHITE);
+						// PRINT("\n", RESET);
+
+						int temp = pend[increment - k];
+						PRINT("BinaryJacob: Inside for to inside main : temp :", BLUE);
+						PRINT(temp, WHITE);
+						PRINT("\n", RESET);
+
+						this->mainVec.insert(it + 1, temp);
+						pend.erase(pend.begin() + increment - k);
+				}
+
+			}
+			
+		// debug_vec(this->mainVec);
 		PRINT("BinaryJaocb: pend", BLUE);
 		printVec(pend);
 		PRINT("\n", RESET);
