@@ -40,7 +40,7 @@ class	PmergeMe
 		void		fillDividedVec(int size, int nbInsidePacket, size_t* sizeDividedVec);
 		void		fillMainVec(size_t sizeDividedVec);
 		void		fillmainVecAndPend(std::vector<int>* pend, size_t sizeDividedVec, size_t nbInsidePacket);
-		void		binaryJacobsthalNbsInsert(std::vector<int>& pend, int jacobsthalNumber, int nbInsidePacket);
+		void		binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int> jacobsthalNumber, int nbInsidePacket);
 		void		swap(int sizeDividedVec, int nbInsidePacket);
 		void		fillPend(std::vector<int>* pend, size_t sizeDividedVec, size_t nbInsidePacket);
 		void		resizeDividedArrayVec();
