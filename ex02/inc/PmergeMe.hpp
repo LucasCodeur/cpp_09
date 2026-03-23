@@ -45,6 +45,7 @@ class	PmergeMe
 		void		fillPend(std::vector<int>* pend, size_t sizeDividedVec, size_t nbInsidePacket);
 		void		resizeDividedArrayVec();
 		void		printArrayVecs(int sizeDividedVec);
+		std::vector<int>::iterator searchNumber(int born_end, int value);
 	private:
 };
 
