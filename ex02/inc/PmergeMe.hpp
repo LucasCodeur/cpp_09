@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 14:47:29 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/03/22 10:15:33 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/03/24 18:26:12 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ class	PmergeMe
 		std::vector<int>	remaining;
 		std::vector<int>*	dividedVec;
 		int					originalSizeDividedVec;
+		int					mainIncrement;
 
 		PmergeMe	(void);
 		PmergeMe	(int _sizeStr);
@@ -39,8 +40,9 @@ class	PmergeMe
 		void		divideAndComp(size_t size, size_t nbInsidePacket, size_t sizeDividedVec);
 		void		fillDividedVec(int size, int nbInsidePacket, size_t* sizeDividedVec);
 		void		fillMainVec(size_t sizeDividedVec);
-		void		fillmainVecAndPend(std::vector<int>* pend, size_t sizeDividedVec, size_t nbInsidePacket);
-		void		binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int> jacobsthalNumber, int nbInsidePacket);
+		void		fillmainVecAndPend(std::vector<int>& pend, size_t sizeDividedVec, size_t nbInsidePacket);
+		int			computeIncrement(std::vector<int>& pend, size_t nbInsidePacket, std::vector<int>& jacobsthalNumber, int j, int& count);
+		void		binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int> copyMain, std::vector<int> jacobsthalNumber, int nbInsidePacket, int& counterPend);
 		void		swap(int sizeDividedVec, int nbInsidePacket);
 		void		fillPend(std::vector<int>* pend, size_t sizeDividedVec, size_t nbInsidePacket);
 		void		resizeDividedArrayVec();
