@@ -141,15 +141,14 @@ void		PmergeMe::divideAndComp(size_t size, size_t nbInsidePacket, size_t sizeDiv
 
 	fillmainVecAndPend(pend, sizeDividedVec, nbInsidePacket);
 
-	int	sizePend = pend.size();
 	int	i = 0;
-	while (sizePend > 0 && i < 10)
+	while (this->countPend > 0 && i < 10)
 	{
-		binaryJacobsthalNbsInsert(pend, this->mainVec, jacobsthalNbs, nbInsidePacket, sizePend);
+		binaryJacobsthalNbsInsert(pend, this->mainVec, jacobsthalNbs, nbInsidePacket);
 		jacobsthalNbs.push_back(jacobsthalNbs[0] + jacobsthalNbs[0] + jacobsthalNbs[1]);
 		jacobsthalNbs.erase(jacobsthalNbs.begin());
 		PRINT("DIVIDED AND COMP", YELLOW);
-		PRINT(sizePend, WHITE);
+		PRINT(this->countPend, WHITE);
 		i++;
 	}
 	if (remaining.empty() == true)
@@ -174,46 +173,65 @@ int	PmergeMe::computeIncrement(std::vector<int>& pend, size_t nbInsidePacket, st
 	else
 	{
 		increment = ((jacobsthalNumber[1]) * nbInsidePacket) - 1 - j;
-		if (pend.size() > this->mainVec.size())
-			this->mainIncrement = ((jacobsthalNumber[1]) * nbInsidePacket) - 1 - j - nbInsidePacket;
-		else
-			this->mainIncrement = increment;
+		// if (pend.size() > this->mainVec.size())
+		// 	this->mainIncrement = ((jacobsthalNumber[1]) * nbInsidePacket) - 1 - j - nbInsidePacket;
+		// else
+		// 	this->mainIncrement = increment;
 	}
 	return (increment);
 }
 
-void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int> copyMain, std::vector<int> jacobsthalNumber, int nbInsidePacket, int& counterPend)
+
+void	PmergeMe::pushFirstPacket(std::vector<int> vec, int nbInsidePacket)
+{
+	for (int i = nbInsidePacket; i > 0; i--)
+	{
+		this->mainVec.insert(this->mainVec.begin(), vec[i - 1]);
+		this->countPend--;
+	}
+}
+
+void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int> copyMain, std::vector<int> jacobsthalNumber, int nbInsidePacket)
 {
 	PRINT("BINARY JACOBSTHAL", YELLOW);
 
 	size_t	sizePend = pend.size();
-	mainVec.reserve(mainVec.size() + sizePend + 10);
+	mainVec.reserve(mainVec.size() + sizePend);
 
 	if (sizePend == 0)
 		return ;
 
+
+	this->pushFirstPacket(pend, nbInsidePacket);
+
+	PRINT("Jacob: mainVec", GREEN);
+	this->printVec(mainVec);
 	int	count = jacobsthalNumber[1] - jacobsthalNumber[0];
+
+
+	PRINT("Jacob: COPYmainVec", GREEN);
+	this->printVec(copyMain);
 
 	PRINT("BinaryJacob: nbInsidePacket", RED);
 	PRINT(nbInsidePacket, WHITE);
-	for (size_t j = 0; count > 0; j += nbInsidePacket)	
+	for (size_t j = 0; count > 0 && this->countPend > 0; j += nbInsidePacket)	
 	{
 
-	int increment = computeIncrement(pend, nbInsidePacket, jacobsthalNumber, j, count);
+		int increment = computeIncrement(pend, nbInsidePacket, jacobsthalNumber, j, count);
 		PRINT("Jacob: INCREMENT", YELLOW);
 		PRINT(increment, WHITE);
 
-		PRINT("Jacob: Jacobsthal Number [1]", RED);
-		PRINT(jacobsthalNumber[1], WHITE);
-
-		PRINT("Jacob: Jacobsthal Number [0]", RED);
-		PRINT(jacobsthalNumber[0], WHITE);
-
-		PRINT("Jacob: nb Inside packet", RED);
-		PRINT(nbInsidePacket, WHITE);
-
-		PRINT("Jacob: j", RED);
-		PRINT(j, WHITE);
+		// PRINT("Jacob: Jacobsthal Number [1]", RED);
+		// PRINT(jacobsthalNumber[1], WHITE);
+		//
+		// PRINT("Jacob: Jacobsthal Number [0]", RED);
+		// PRINT(jacobsthalNumber[0], WHITE);
+		//
+		// PRINT("Jacob: nb Inside packet", RED);
+		// PRINT(nbInsidePacket, WHITE);
+		//
+		// PRINT("Jacob: j", RED);
+		// PRINT(j, WHITE);
 
 		if (increment < 0 || increment >= static_cast<int>(pend.size()))
 		{
@@ -224,55 +242,76 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 		int	temp = pend[increment];
 		PRINT("BinaryJacob: pend[increment]", GREEN);
 		PRINT(temp, WHITE);
-		PRINT("\n", RESET);
 
-		PRINT("main vec: ", GREEN);
-		this->printVec(this->mainVec);
-		PRINT("\n", RESET);
-		
-		PRINT("main begin :", GREEN);
-		PRINT(*this->mainVec.begin(), WHITE);
+		PRINT("BinaryJacob: copyMain[increment]", GREEN);
+		PRINT(copyMain[increment], WHITE);
+		// PRINT("\n", RESET);
+		//
+		// PRINT("main vec: ", GREEN);
+		// this->printVec(this->mainVec);
+		// PRINT("\n", RESET);
+		//
+		// PRINT("main begin :", GREEN);
+		// PRINT(*this->mainVec.begin(), WHITE);
 
-		PRINT("main end :", GREEN);
-		PRINT(*(this->mainVec.end() - 1), WHITE);
-
-		PRINT("main size : ", GREEN);
-		PRINT(this->mainVec.size(), WHITE);
-
-		PRINT("\n", RESET);
+		// PRINT("main end :", GREEN);
+		// PRINT(*(this->mainVec.end() - 1), WHITE);
+		//
+		// PRINT("main size : ", GREEN);
+		// PRINT(this->mainVec.size(), WHITE);
+		//
+		// PRINT("\n", RESET);
 		// for (size_t i = 0; i < this->mainVec.size(); i++)
 		// {
 		// 	PRINT("Jacob: mainvec[i]: ", RED);
 		// 	PRINT(this->mainVec[i], WHITE);
 		// }
 
-		PRINT("Jacob: Born end", YELLOW);
-		PRINT("Jacob: JacobsthalNumber", RED);
-		PRINT(jacobsthalNumber[1], WHITE);
-		PRINT("Jacob: nbInsidePacket", RED);
-		PRINT(nbInsidePacket, WHITE);
-		PRINT("Jacob: j", RED);
-		PRINT(j, WHITE);
-		PRINT("\n", RESET);
+		// PRINT("Jacob: JacobsthalNumber", RED);
+		// PRINT(jacobsthalNumber[1], WHITE);
+		// PRINT("Jacob: nbInsidePacket", RED);
+		// PRINT(nbInsidePacket, WHITE);
+		// PRINT("Jacob: j", RED);
+		// PRINT(j, WHITE);
+		// PRINT("\n", RESET);
 
 		// int born_end = (jacobsthalNumber[1]) * nbInsidePacket - 1 - j;
 		//
 		// PRINT("Jacob: born end: ", YELLOW);
 		// PRINT(born_end, WHITE);
 
-		PRINT("Jacob: this->mainINcrement", GREEN);
-		PRINT(this->mainIncrement, WHITE);
-
-		PRINT("Jacob: copyMain[increment]", YELLOW);
-		PRINT(copyMain[this->mainIncrement], WHITE);
+		// PRINT("Jacob: this->mainINcrement", GREEN);
+		// PRINT(this->mainIncrement, WHITE);
+		//
+		// PRINT("Jacob: copyMain[increment]", YELLOW);
+		// PRINT(copyMain[this->mainIncrement], WHITE);
 
 		PRINT("Jacob: copyMain", YELLOW);
 		this->printVec(copyMain);
 
-		std::vector<int>::iterator it = std::find(this->mainVec.begin(), this->mainVec.end(), copyMain[this->mainIncrement]);
+		std::vector<int>::iterator it_bound;		
+		if (static_cast<size_t>(increment) > copyMain.size())
+		{
+			PRINT("Jacob: Increment superior to copyMain", WHITE);
+			it_bound = this->mainVec.end();
+		}
+		else
+		{
+			PRINT("Jacob: Increment inferior to copyMain", WHITE);
+			it_bound  = std::find(this->mainVec.begin(), this->mainVec.end(), copyMain[increment]);
+		}
+		std::vector<int>::iterator it = std::upper_bound(this->mainVec.begin(), it_bound, pend[increment]);		
 
-		PRINT("BinaryJacob: result FIND", YELLOW);
+		for (std::vector<int>::iterator it = this->mainVec.begin(); it != it_bound; it++)
+		{
+			PRINT(*it, WHITE);
+		}
+		PRINT("BinaryJacob: result it_bound", YELLOW);
+		PRINT(*it_bound, WHITE);
+
+		PRINT("BinaryJacob: result it", YELLOW);
 		PRINT(*it, WHITE);
+
 		PRINT("\n", RESET);
 
 			PRINT("BinaryJacob: before for to add inside Vecmain: increment: ", GREEN);
@@ -282,6 +321,7 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 			if (*it > temp)
 			{
 				// FIXME: Have to change how to insert 
+				PRINT("Jacob: first for", GREEN)
 				for (int k = 0; k < nbInsidePacket; k++)
 				{
 						// int posInPend = increment - nbInsidePacket + 1;
@@ -295,11 +335,12 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 						PRINT("\n", RESET);
 
 						this->mainVec.insert(it - nbInsidePacket + 1, temp);
-						counterPend--;
+						this->countPend--;
 				}
 			}
 			else
 			{
+				PRINT("Jacob: Second for", GREEN);
 				for (int k = 0; k < nbInsidePacket; k++)
 				{
 						// int posInPend = increment - nbInsidePacket + 1;
@@ -312,9 +353,8 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 						PRINT(temp, WHITE);
 						PRINT("\n", RESET);
 
-						this->mainVec.insert(it + 1, temp);
-						pend.erase(pend.begin() + increment - k);
-						counterPend--;
+						this->mainVec.insert(it, temp);
+						this->countPend--;
 				}
 
 			}
@@ -383,6 +423,7 @@ void	PmergeMe::fillmainVecAndPend(std::vector<int>& pend, size_t sizeDividedVec,
 	PRINT("FILL MAIN VEC AND PEND: pend", RED);
 	this->printVec(pend);
 	PRINT("\n", RESET);
+	this->countPend = pend.size();
 }
 
 void		PmergeMe::fillDividedVec(int size, int nbInsidePacket, size_t* sizeDividedVec)

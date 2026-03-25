@@ -27,6 +27,7 @@ class	PmergeMe
 		std::vector<int>*	dividedVec;
 		int					originalSizeDividedVec;
 		int					mainIncrement;
+		int					countPend;
 
 		PmergeMe	(void);
 		PmergeMe	(int _sizeStr);
@@ -42,7 +43,8 @@ class	PmergeMe
 		void		fillMainVec(size_t sizeDividedVec);
 		void		fillmainVecAndPend(std::vector<int>& pend, size_t sizeDividedVec, size_t nbInsidePacket);
 		int			computeIncrement(std::vector<int>& pend, size_t nbInsidePacket, std::vector<int>& jacobsthalNumber, int j, int& count);
-		void		binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int> copyMain, std::vector<int> jacobsthalNumber, int nbInsidePacket, int& counterPend);
+		void		binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int> copyMain, std::vector<int> jacobsthalNumber, int nbInsidePacket);
+		void		pushFirstPacket(std::vector<int> vec, int nbInsidePacket);
 		void		swap(int sizeDividedVec, int nbInsidePacket);
 		void		fillPend(std::vector<int>* pend, size_t sizeDividedVec, size_t nbInsidePacket);
 		void		resizeDividedArrayVec();
