@@ -56,7 +56,7 @@ static void		divideAndComp();
 
 void		PmergeMe::fordJonhson()
 {
-	int	sizeDividedVec;
+	size_t	sizeDividedVec;
 	int	size = this->mainVec.size();
 	this->dividedVec = NULL;
 
@@ -68,6 +68,27 @@ void		PmergeMe::fordJonhson()
 	this->originalSizeDividedVec = sizeDividedVec;
 	this->dividedVec = new std::vector<int>[sizeDividedVec];
 	divideAndComp(size, 1, sizeDividedVec);
+	std::vector<int> pend;
+	fillmainVecAndPend(pend, sizeDividedVec, 1);
+	std::vector<int> jacobsthalNbs;
+	int	i = 0;
+	while (this->countPend > 0)
+	{
+		binaryJacobsthalNbsInsert(pend, this->mainVec, jacobsthalNbs, 1);
+		jacobsthalNbs.push_back(jacobsthalNbs[0] + jacobsthalNbs[0] + jacobsthalNbs[1]);
+		jacobsthalNbs.erase(jacobsthalNbs.begin());
+		PRINT("DIVIDED AND COMP", YELLOW);
+		PRINT(this->countPend, WHITE);
+		i++;
+	}
+	if (remaining.empty() == true)
+		return ;
+	for (size_t i = 0; i < this->remaining.size(); i++)
+	{
+		this->mainVec.push_back(remaining[i]);
+	}
+	remaining.clear();
+
 	delete [] this->dividedVec;
 }
 
@@ -79,8 +100,8 @@ void		PmergeMe::divideAndComp(size_t size, size_t nbInsidePacket, size_t sizeDiv
 		this->cleanDividedVec(sizeDividedVec);
 		this->fillDividedVec(size, nbInsidePacket, &sizeDividedVec);
 		// oldSizeDividedVec = sizeDividedVec;
-		PRINT("DIVIDE AND COMP: Divided Vec : after first divided vec", RED);
-		printArrayVecs(sizeDividedVec);
+		// PRINT("DIVIDE AND COMP: Divided Vec : after first divided vec", RED);
+		// printArrayVecs(sizeDividedVec);
 	}
 	else
 	{
@@ -121,14 +142,14 @@ void		PmergeMe::divideAndComp(size_t size, size_t nbInsidePacket, size_t sizeDiv
 	jacobsthalNbs.push_back(1);
 	jacobsthalNbs.push_back(3);
 
-	PRINT("DIVIDE AND COMP: MainVec before cleandivided and fillmainVecAndPend", RED);
-	this->printVec(this->mainVec);
+	// PRINT("DIVIDE AND COMP: MainVec before cleandivided and fillmainVecAndPend", RED);
+	// this->printVec(this->mainVec);
 	PRINT("\n", RESET);
 
 	this->cleanDividedVec(sizeDividedVec);
 
-	PRINT("DIVIDED AND COMP: Just before fill divided vec", RED);
-	this->printArrayVecs(sizeDividedVec);
+	// PRINT("DIVIDED AND COMP: Just before fill divided vec", RED);
+	// this->printArrayVecs(sizeDividedVec);
 
 	this->fillDividedVec(size, nbInsidePacket, &sizeDividedVec);
 
@@ -136,8 +157,8 @@ void		PmergeMe::divideAndComp(size_t size, size_t nbInsidePacket, size_t sizeDiv
 	this->printArrayVecs(sizeDividedVec);
 	PRINT("\n", RESET);
 
-	PRINT("DIVIDE AND COMP: Main vec : after pushPacket inside main", RED);
-	printVec(this->mainVec);
+	// PRINT("DIVIDE AND COMP: Main vec : after pushPacket inside main", RED);
+	// printVec(this->mainVec);
 
 	fillmainVecAndPend(pend, sizeDividedVec, nbInsidePacket);
 
@@ -202,20 +223,28 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 		return ;
 
 
-	this->pushFirstPacket(pend, nbInsidePacket);
-
-	PRINT("Jacob: mainVec", GREEN);
-	this->printVec(mainVec);
+	if (jacobsthalNumber[1] == 3)
+		this->pushFirstPacket(pend, nbInsidePacket);
+	
 	int	count = jacobsthalNumber[1] - jacobsthalNumber[0];
-
-
-	PRINT("Jacob: COPYmainVec", GREEN);
-	this->printVec(copyMain);
-
-	PRINT("BinaryJacob: nbInsidePacket", RED);
-	PRINT(nbInsidePacket, WHITE);
 	for (size_t j = 0; count > 0 && this->countPend > 0; j += nbInsidePacket)	
 	{
+
+		PRINT("Jacob: mainVec", GREEN);
+		this->printVec(mainVec);
+		PRINT("\n", RESET);
+
+		PRINT("Jacob: CopyMainVec", GREEN);
+		this->printVec(copyMain);
+		PRINT("\n", RESET);
+
+		PRINT("Jacob: pend", GREEN);
+		this->printVec(pend);
+		PRINT("\n", RESET);
+
+		PRINT("BinaryJacob: nbInsidePacket", RED);
+		PRINT(nbInsidePacket, WHITE);
+		PRINT("\n", RESET);
 
 		int increment = computeIncrement(pend, nbInsidePacket, jacobsthalNumber, j, count);
 		PRINT("Jacob: INCREMENT", YELLOW);
@@ -300,12 +329,18 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 			PRINT("Jacob: Increment inferior to copyMain", WHITE);
 			it_bound  = std::find(this->mainVec.begin(), this->mainVec.end(), copyMain[increment]);
 		}
-		std::vector<int>::iterator it = std::upper_bound(this->mainVec.begin(), it_bound, pend[increment]);		
 
-		for (std::vector<int>::iterator it = this->mainVec.begin(); it != it_bound; it++)
+		int	i = 0;
+		for (std::vector<int>::iterator it = this->mainVec.begin(); it != it_bound + 1; it++)
 		{
 			PRINT(*it, WHITE);
+			i++;
 		}
+		// std::vector<int>::iterator it = std::upper_bound(this->mainVec.begin(), it_bound, pend[increment]);		
+		std::vector<int>::iterator it;
+		// it = this->mainVec.end();
+		it = searchNumber(i, pend[increment]);
+
 		PRINT("BinaryJacob: result it_bound", YELLOW);
 		PRINT(*it_bound, WHITE);
 
@@ -376,6 +411,7 @@ std::vector<int>::iterator PmergeMe::searchNumber(int born_end, int value)
 {
 	std::vector<int>::iterator it;
 
+	it = this->mainVec.end();
 	for (int i = 0; i < born_end; i++)
 	{
 		if (this->mainVec[i] >= value)	
@@ -386,6 +422,17 @@ std::vector<int>::iterator PmergeMe::searchNumber(int born_end, int value)
 
 void	PmergeMe::fillmainVecAndPend(std::vector<int>& pend, size_t sizeDividedVec, size_t nbInsidePacket)
 {
+	if (nbInsidePacket == 1)
+	{
+		for (size_t i = 0;  i < this->mainVec.size(); i++)
+		{
+			if (i % 2 == 0)
+			{
+				pend.push_back(this->mainVec[i]);
+				this->mainVec.erase(this->mainVec.begin() + i);
+			}
+		}
+	}
 	for (size_t j = 0; j < sizeDividedVec; j++)
 	{
 		if (j % 2 == 0)
