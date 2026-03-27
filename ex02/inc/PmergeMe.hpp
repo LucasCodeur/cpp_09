@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 14:47:29 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/03/24 18:26:12 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/03/26 11:00:28 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ class	PmergeMe
 		void		fillPend(std::vector<int>* pend, size_t sizeDividedVec, size_t nbInsidePacket);
 		void		resizeDividedArrayVec();
 		void		printArrayVecs(int sizeDividedVec);
-		std::vector<int>::iterator searchNumber(int born_end, int value);
+		std::vector<int>::iterator searchNumber(std::vector<int>::iterator it_bound, int value);
 	private:
 };
 

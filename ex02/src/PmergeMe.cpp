@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 17:16:20 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/03/24 19:05:19 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/03/26 11:45:53 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,26 +68,29 @@ void		PmergeMe::fordJonhson()
 	this->originalSizeDividedVec = sizeDividedVec;
 	this->dividedVec = new std::vector<int>[sizeDividedVec];
 	divideAndComp(size, 1, sizeDividedVec);
+
+	PRINT("----------------------------------------------------------------------------------\n", RED);
+	PRINT("LAST RECURSION", YELLOW);
 	std::vector<int> pend;
 	fillmainVecAndPend(pend, sizeDividedVec, 1);
 	std::vector<int> jacobsthalNbs;
-	int	i = 0;
+	jacobsthalNbs.push_back(1);
+	jacobsthalNbs.push_back(3);
 	while (this->countPend > 0)
 	{
 		binaryJacobsthalNbsInsert(pend, this->mainVec, jacobsthalNbs, 1);
 		jacobsthalNbs.push_back(jacobsthalNbs[0] + jacobsthalNbs[0] + jacobsthalNbs[1]);
 		jacobsthalNbs.erase(jacobsthalNbs.begin());
-		PRINT("DIVIDED AND COMP", YELLOW);
+		PRINT("DIVIDED AND COMP : count pend", YELLOW);
 		PRINT(this->countPend, WHITE);
-		i++;
 	}
-	if (remaining.empty() == true)
-		return ;
-	for (size_t i = 0; i < this->remaining.size(); i++)
-	{
-		this->mainVec.push_back(remaining[i]);
-	}
-	remaining.clear();
+	// if (remaining.empty() == true)
+	// 	return ;
+	// for (size_t i = 0; i < this->remaining.size(); i++)
+	// {
+	// 	this->mainVec.push_back(remaining[i]);
+	// }
+	// remaining.clear();
 
 	delete [] this->dividedVec;
 }
@@ -162,15 +165,13 @@ void		PmergeMe::divideAndComp(size_t size, size_t nbInsidePacket, size_t sizeDiv
 
 	fillmainVecAndPend(pend, sizeDividedVec, nbInsidePacket);
 
-	int	i = 0;
-	while (this->countPend > 0 && i < 10)
+	while (this->countPend)
 	{
 		binaryJacobsthalNbsInsert(pend, this->mainVec, jacobsthalNbs, nbInsidePacket);
 		jacobsthalNbs.push_back(jacobsthalNbs[0] + jacobsthalNbs[0] + jacobsthalNbs[1]);
 		jacobsthalNbs.erase(jacobsthalNbs.begin());
-		PRINT("DIVIDED AND COMP", YELLOW);
+		PRINT("FORD JHONSON: Count pend", YELLOW);
 		PRINT(this->countPend, WHITE);
-		i++;
 	}
 	if (remaining.empty() == true)
 		return ;
@@ -183,22 +184,30 @@ void		PmergeMe::divideAndComp(size_t size, size_t nbInsidePacket, size_t sizeDiv
 
 int	PmergeMe::computeIncrement(std::vector<int>& pend, size_t nbInsidePacket, std::vector<int>& jacobsthalNumber, int j, int& count)
 {
-	int	increment = 0;
+	size_t	increment = 0;
+
 	this->mainIncrement = 0;
 
-	if (pend.size() == nbInsidePacket)
-	{
-		increment = nbInsidePacket - 1;
-		count = 1;
-	}
-	else
-	{
+	// if (jacobsthalNumber[1] >= static_cast<int>(pend.size()))
+	// {
+	// 	PRINT("HERE", WHITE);
+	// 	increment = pend.size() - 1;
+	// }
+	// else if (pend.size() == nbInsidePacket)
+	// {
+	// 	increment = nbInsidePacket - 1;
+	// 	count = 1;
+	// }
+	// else
+	// {
 		increment = ((jacobsthalNumber[1]) * nbInsidePacket) - 1 - j;
+		if (increment >= pend.size())
+			increment = pend.size() - 1;
 		// if (pend.size() > this->mainVec.size())
 		// 	this->mainIncrement = ((jacobsthalNumber[1]) * nbInsidePacket) - 1 - j - nbInsidePacket;
 		// else
 		// 	this->mainIncrement = increment;
-	}
+	// }
 	return (increment);
 }
 
@@ -229,6 +238,9 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 	int	count = jacobsthalNumber[1] - jacobsthalNumber[0];
 	for (size_t j = 0; count > 0 && this->countPend > 0; j += nbInsidePacket)	
 	{
+		PRINT("Jacob: Jacobsthal Number", GREEN);
+		PRINT(jacobsthalNumber[1], WHITE);
+		PRINT("\n", RESET);
 
 		PRINT("Jacob: mainVec", GREEN);
 		this->printVec(mainVec);
@@ -238,7 +250,7 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 		this->printVec(copyMain);
 		PRINT("\n", RESET);
 
-		PRINT("Jacob: pend", GREEN);
+		PRINT("Jacob: pend", YELLOW);
 		this->printVec(pend);
 		PRINT("\n", RESET);
 
@@ -267,6 +279,10 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 			PRINT("Jacob: increment wrong", RED);
 			return ;
 		}
+
+		PRINT("Jacob: count pend: ", BLUE);
+		PRINT(this->countPend, WHITE);
+		PRINT("\n", RESET);
 
 		int	temp = pend[increment];
 		PRINT("BinaryJacob: pend[increment]", GREEN);
@@ -330,22 +346,16 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 			it_bound  = std::find(this->mainVec.begin(), this->mainVec.end(), copyMain[increment]);
 		}
 
-		int	i = 0;
-		for (std::vector<int>::iterator it = this->mainVec.begin(); it != it_bound + 1; it++)
-		{
-			PRINT(*it, WHITE);
-			i++;
-		}
 		// std::vector<int>::iterator it = std::upper_bound(this->mainVec.begin(), it_bound, pend[increment]);		
 		std::vector<int>::iterator it;
 		// it = this->mainVec.end();
-		it = searchNumber(i, pend[increment]);
+		it = searchNumber(it_bound, pend[increment]);
 
 		PRINT("BinaryJacob: result it_bound", YELLOW);
 		PRINT(*it_bound, WHITE);
 
-		PRINT("BinaryJacob: result it", YELLOW);
-		PRINT(*it, WHITE);
+		// PRINT("BinaryJacob: result it", YELLOW);
+		// PRINT(*it, WHITE);
 
 		PRINT("\n", RESET);
 
@@ -369,6 +379,9 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 						PRINT(temp, WHITE);
 						PRINT("\n", RESET);
 
+						PRINT("Jacob: *it > temp:  just before insert", GREEN);
+						PRINT(*it, WHITE);
+					
 						this->mainVec.insert(it - nbInsidePacket + 1, temp);
 						this->countPend--;
 				}
@@ -387,6 +400,9 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 						PRINT("BinaryJacob: Inside for to inside main : temp :", BLUE);
 						PRINT(temp, WHITE);
 						PRINT("\n", RESET);
+
+						PRINT("Jacob: *it < temp: BEFORE INSERT: it", YELLOW);
+						PRINT(*it, WHITE);
 
 						this->mainVec.insert(it, temp);
 						this->countPend--;
@@ -407,15 +423,28 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 	}
 }
 
-std::vector<int>::iterator PmergeMe::searchNumber(int born_end, int value)
+std::vector<int>::iterator PmergeMe::searchNumber(std::vector<int>::iterator it_bound, int value)
 {
 	std::vector<int>::iterator it;
 
-	it = this->mainVec.end();
-	for (int i = 0; i < born_end; i++)
+	it = it_bound;
+	if (this->countPend == 1)
 	{
-		if (this->mainVec[i] >= value)	
-			return (this->mainVec.begin() + i);
+		PRINT("HERE", WHITE);
+		for (std::vector<int>::iterator it = this->mainVec.end() - 1; it != it_bound; --it)
+		{
+			if (*it <= value)
+				return (it);
+		}
+		return (it_bound);
+	}
+	else
+	{
+		for (std::vector<int>::iterator it = this->mainVec.begin(); it != it_bound; it++)
+		{
+			if (*it >= value)	
+				return (it);
+		}
 	}
 	return (it);
 }
@@ -424,14 +453,28 @@ void	PmergeMe::fillmainVecAndPend(std::vector<int>& pend, size_t sizeDividedVec,
 {
 	if (nbInsidePacket == 1)
 	{
-		for (size_t i = 0;  i < this->mainVec.size(); i++)
+		std::vector<int> temp;
+		size_t		count; 
+
+		if (this->mainVec.size() % 2 == 0)
+			count = this->mainVec.size();
+		else
+			count = this->mainVec.size() - 1;
+		for (size_t i = 0;  i < count; i++)
 		{
+			PRINT("FILL MAIN VEC", RED);
+			PRINT(this->mainVec[i], WHITE);
 			if (i % 2 == 0)
 			{
 				pend.push_back(this->mainVec[i]);
-				this->mainVec.erase(this->mainVec.begin() + i);
+			}
+			else
+			{
+				temp.push_back(this->mainVec[i]);
 			}
 		}
+		this->mainVec.clear();
+		this->mainVec = temp;
 	}
 	for (size_t j = 0; j < sizeDividedVec; j++)
 	{
