@@ -165,7 +165,7 @@ void		PmergeMe::divideAndComp(size_t size, size_t nbInsidePacket, size_t sizeDiv
 
 	fillmainVecAndPend(pend, sizeDividedVec, nbInsidePacket);
 
-	while (this->countPend)
+	while (this->countPend > 0)
 	{
 		binaryJacobsthalNbsInsert(pend, this->mainVec, jacobsthalNbs, nbInsidePacket);
 		jacobsthalNbs.push_back(jacobsthalNbs[0] + jacobsthalNbs[0] + jacobsthalNbs[1]);
@@ -175,6 +175,8 @@ void		PmergeMe::divideAndComp(size_t size, size_t nbInsidePacket, size_t sizeDiv
 	}
 	if (remaining.empty() == true)
 		return ;
+	PRINT("REMAINING : ", YELLOW);
+	printVec(remaining);
 	for (size_t i = 0; i < this->remaining.size(); i++)
 	{
 		this->mainVec.push_back(remaining[i]);
@@ -220,6 +222,9 @@ void	PmergeMe::pushFirstPacket(std::vector<int> vec, int nbInsidePacket)
 		this->countPend--;
 	}
 }
+
+
+std::vector<int>::iterator binarySearch(std::vector<int>& v, int low, int high, int target);
 
 void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int> copyMain, std::vector<int> jacobsthalNumber, int nbInsidePacket)
 {
@@ -346,16 +351,25 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 			it_bound  = std::find(this->mainVec.begin(), this->mainVec.end(), copyMain[increment]);
 		}
 
+		int high = 0;
+		std::vector<int>::iterator it_temp = this->mainVec.begin();
+		while (it_temp != it_bound)
+		{
+			it_temp++;
+			high++;
+		}
+
 		// std::vector<int>::iterator it = std::upper_bound(this->mainVec.begin(), it_bound, pend[increment]);		
 		std::vector<int>::iterator it;
 		// it = this->mainVec.end();
-		it = searchNumber(it_bound, pend[increment]);
+		it = binarySearch(this->mainVec, nbInsidePacket - 1, high, pend[increment]);
 
 		PRINT("BinaryJacob: result it_bound", YELLOW);
 		PRINT(*it_bound, WHITE);
-
-		// PRINT("BinaryJacob: result it", YELLOW);
-		// PRINT(*it, WHITE);
+		PRINT("BinaryJacob: result this->mainVec[high]", YELLOW);
+		PRINT(this->mainVec[high], WHITE);
+		PRINT("BinaryJacob: result it", YELLOW);
+		PRINT(*it, WHITE);
 
 		PRINT("\n", RESET);
 
@@ -404,13 +418,16 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 						PRINT("Jacob: *it < temp: BEFORE INSERT: it", YELLOW);
 						PRINT(*it, WHITE);
 
-						this->mainVec.insert(it, temp);
+						// if (this->countPend != 1)
+							this->mainVec.insert(it, temp);
+						// else
+						// 	this->mainVec.insert(it, temp);
 						this->countPend--;
 				}
 
 			}
 		PRINT("BinaryJaocb: pend", BLUE);
-		PRINT("size: ", RED);
+		PRINT("size pend: ", RED);
 		PRINT(pend.size(), WHITE);
 		printVec(pend);
 		PRINT("\n", RESET);
@@ -428,25 +445,51 @@ std::vector<int>::iterator PmergeMe::searchNumber(std::vector<int>::iterator it_
 	std::vector<int>::iterator it;
 
 	it = it_bound;
-	if (this->countPend == 1)
-	{
-		PRINT("HERE", WHITE);
-		for (std::vector<int>::iterator it = this->mainVec.end() - 1; it != it_bound; --it)
-		{
-			if (*it <= value)
-				return (it);
-		}
-		return (it_bound);
-	}
-	else
-	{
+	// if (this->countPend == 1)
+	// {
+	// 	PRINT("HERE", WHITE);
+	// 	for (std::vector<int>::iterator it = this->mainVec.end() - 1; it != it_bound; --it)
+	// 	{
+	// 		if (*it <= value)
+	// 			return (it);
+	// 	}
+	// 	return (it_bound);
+	// }
+	// else
+	// {
 		for (std::vector<int>::iterator it = this->mainVec.begin(); it != it_bound; it++)
 		{
 			if (*it >= value)	
 				return (it);
 		}
-	}
+	// }
 	return (it);
+}
+
+std::vector<int>::iterator binarySearch(std::vector<int>& v, int low, int high, int target)
+{
+    while (low < high) {
+      
+      	// Finding mid point
+        int mid = ((high - low) / 2) + low;
+        std::cout << "mid: " << mid << std::endl;
+        std::cout << "low: " << low << std::endl;
+        std::cout << "high: " << high << std::endl;
+        
+
+        // If the middle element is equal to target
+        // target, search in the left half 
+        if (v[mid] <= target)
+            low = mid + 1;
+        else
+			high = mid;
+    }
+  	
+  	// If we don't find the target
+	if (static_cast<size_t>(low) < v.size())
+		return (v.begin() + low);
+	return (v.end());
+
 }
 
 void	PmergeMe::fillmainVecAndPend(std::vector<int>& pend, size_t sizeDividedVec, size_t nbInsidePacket)
@@ -505,6 +548,7 @@ void	PmergeMe::fillmainVecAndPend(std::vector<int>& pend, size_t sizeDividedVec,
 			}
 		}
 	}
+
 
 	PRINT("FILL MAIN VEC AND PEND: main", RED);
 	this->printVec(this->mainVec);
