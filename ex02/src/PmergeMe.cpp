@@ -223,8 +223,8 @@ void	PmergeMe::pushFirstPacket(std::vector<int> vec, int nbInsidePacket)
 	}
 }
 
+std::vector<int>::iterator binarySearch(std::vector<int>& v, int low, int high, int target, int nbInsidePacket);
 
-std::vector<int>::iterator binarySearch(std::vector<int>& v, int low, int high, int target);
 
 void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int> copyMain, std::vector<int> jacobsthalNumber, int nbInsidePacket)
 {
@@ -362,7 +362,12 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 		// std::vector<int>::iterator it = std::upper_bound(this->mainVec.begin(), it_bound, pend[increment]);		
 		std::vector<int>::iterator it;
 		// it = this->mainVec.end();
-		it = binarySearch(this->mainVec, nbInsidePacket - 1, high, pend[increment]);
+		int low = 0;
+		if (nbInsidePacket == 1)
+			low = nbInsidePacket;
+		else
+			low = nbInsidePacket - 1;
+		it = binarySearch(this->mainVec, low, high, pend[increment], nbInsidePacket);
 
 		PRINT("BinaryJacob: result it_bound", YELLOW);
 		PRINT(*it_bound, WHITE);
@@ -466,8 +471,26 @@ std::vector<int>::iterator PmergeMe::searchNumber(std::vector<int>::iterator it_
 	return (it);
 }
 
-std::vector<int>::iterator binarySearch(std::vector<int>& v, int low, int high, int target)
+std::vector<int> keepOnlyLastElements(std::vector<int>& v, int nbInsidePackets)
 {
+    std::vector<int> res;
+
+    for (size_t i = nbInsidePackets - 1; i < v.size(); i++)
+    {
+         std::cout << "i :" << i << " v[i] :" << v[i] << std::endl;
+       if ((i + 1) % (nbInsidePackets) == 0) 
+            res.push_back(v[i]);
+    }
+    return (res);
+}
+
+std::vector<int>::iterator binarySearch(std::vector<int>& v, int low, int high, int target, int nbInsidePacket)
+{
+	std::vector<int> temp;
+	if (nbInsidePacket != 1)
+		 temp = keepOnlyLastElements(v, nbInsidePacket);
+	else
+		temp = v;
     while (low < high) {
       
       	// Finding mid point
@@ -479,17 +502,18 @@ std::vector<int>::iterator binarySearch(std::vector<int>& v, int low, int high, 
 
         // If the middle element is equal to target
         // target, search in the left half 
-        if (v[mid] <= target)
+        if (temp[mid] <= target)
             low = mid + 1;
         else
 			high = mid;
     }
   	
-  	// If we don't find the target
+	std::vector<int>::iterator temp_it;
 	if (static_cast<size_t>(low) < v.size())
-		return (v.begin() + low);
-	return (v.end());
+		temp_it = v.begin() + low;
+	temp_it = v.end();
 
+	return(std::find(v.begin(), v.end(), *temp_it));
 }
 
 void	PmergeMe::fillmainVecAndPend(std::vector<int>& pend, size_t sizeDividedVec, size_t nbInsidePacket)
