@@ -73,12 +73,17 @@ void		PmergeMe::fordJonhson()
 	PRINT("LAST RECURSION", YELLOW);
 	std::vector<int> pend;
 	fillmainVecAndPend(pend, sizeDividedVec, 1);
+	PRINT("REMAINING : before binary jacobsthal", YELLOW);
+	printVec(this->remaining);
+
 	std::vector<int> jacobsthalNbs;
 	jacobsthalNbs.push_back(1);
 	jacobsthalNbs.push_back(3);
+	std::vector<int> copyMain = this->mainVec;
 	while (this->countPend > 0)
 	{
-		binaryJacobsthalNbsInsert(pend, this->mainVec, jacobsthalNbs, 1);
+		this->mainIncrement = 0;
+		binaryJacobsthalNbsInsert(pend, copyMain, jacobsthalNbs, 1);
 		jacobsthalNbs.push_back(jacobsthalNbs[0] + jacobsthalNbs[0] + jacobsthalNbs[1]);
 		jacobsthalNbs.erase(jacobsthalNbs.begin());
 		PRINT("DIVIDED AND COMP : count pend", YELLOW);
@@ -164,10 +169,13 @@ void		PmergeMe::divideAndComp(size_t size, size_t nbInsidePacket, size_t sizeDiv
 	// printVec(this->mainVec);
 
 	fillmainVecAndPend(pend, sizeDividedVec, nbInsidePacket);
-
+	PRINT("REMAINING : before binary jacobsthal", YELLOW);
+	printVec(this->remaining);
+	std::vector<int> copyMain = this->mainVec;
 	while (this->countPend > 0)
 	{
-		binaryJacobsthalNbsInsert(pend, this->mainVec, jacobsthalNbs, nbInsidePacket);
+		this->mainIncrement = 0;
+		binaryJacobsthalNbsInsert(pend, copyMain, jacobsthalNbs, nbInsidePacket);
 		jacobsthalNbs.push_back(jacobsthalNbs[0] + jacobsthalNbs[0] + jacobsthalNbs[1]);
 		jacobsthalNbs.erase(jacobsthalNbs.begin());
 		PRINT("FORD JHONSON: Count pend", YELLOW);
@@ -177,6 +185,7 @@ void		PmergeMe::divideAndComp(size_t size, size_t nbInsidePacket, size_t sizeDiv
 		return ;
 	PRINT("REMAINING : ", YELLOW);
 	printVec(remaining);
+
 	for (size_t i = 0; i < this->remaining.size(); i++)
 	{
 		this->mainVec.push_back(remaining[i]);
@@ -190,18 +199,6 @@ int	PmergeMe::computeIncrement(std::vector<int>& pend, size_t nbInsidePacket, st
 
 	this->mainIncrement = 0;
 
-	// if (jacobsthalNumber[1] >= static_cast<int>(pend.size()))
-	// {
-	// 	PRINT("HERE", WHITE);
-	// 	increment = pend.size() - 1;
-	// }
-	// else if (pend.size() == nbInsidePacket)
-	// {
-	// 	increment = nbInsidePacket - 1;
-	// 	count = 1;
-	// }
-	// else
-	// {
 		increment = ((jacobsthalNumber[1]) * nbInsidePacket) - 1 - j;
 		if (increment >= pend.size())
 			increment = pend.size() - 1;
@@ -209,7 +206,7 @@ int	PmergeMe::computeIncrement(std::vector<int>& pend, size_t nbInsidePacket, st
 		// 	this->mainIncrement = ((jacobsthalNumber[1]) * nbInsidePacket) - 1 - j - nbInsidePacket;
 		// else
 		// 	this->mainIncrement = increment;
-	// }
+	this->mainIncrement = increment;
 	return (increment);
 }
 
@@ -223,8 +220,7 @@ void	PmergeMe::pushFirstPacket(std::vector<int> vec, int nbInsidePacket)
 	}
 }
 
-std::vector<int>::iterator binarySearch(std::vector<int>& v, int low, int high, int target, int nbInsidePacket);
-
+std::vector<int>::iterator binarySearch(std::vector<int>& v, std::vector<int>::iterator it_bound, int target, int nbInsidePacket);
 
 void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int> copyMain, std::vector<int> jacobsthalNumber, int nbInsidePacket)
 {
@@ -263,7 +259,10 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 		PRINT(nbInsidePacket, WHITE);
 		PRINT("\n", RESET);
 
-		int increment = computeIncrement(pend, nbInsidePacket, jacobsthalNumber, j, count);
+		int increment = 0;
+		//FIXME: PROBLEM WITH increment, when the jacobsthal number is greater to copyMain or pend, it don't take 101 it take twice 299
+		if (this->mainIncrement == 0)
+			increment = computeIncrement(pend, nbInsidePacket, jacobsthalNumber, j, count);
 		PRINT("Jacob: INCREMENT", YELLOW);
 		PRINT(increment, WHITE);
 
@@ -289,12 +288,12 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 		PRINT(this->countPend, WHITE);
 		PRINT("\n", RESET);
 
-		int	temp = pend[increment];
+		int	temp = pend[this->mainIncrement];
 		PRINT("BinaryJacob: pend[increment]", GREEN);
 		PRINT(temp, WHITE);
 
 		PRINT("BinaryJacob: copyMain[increment]", GREEN);
-		PRINT(copyMain[increment], WHITE);
+		PRINT(copyMain[this->mainIncrement], WHITE);
 		// PRINT("\n", RESET);
 		//
 		// PRINT("main vec: ", GREEN);
@@ -336,39 +335,27 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 		// PRINT("Jacob: copyMain[increment]", YELLOW);
 		// PRINT(copyMain[this->mainIncrement], WHITE);
 
-		PRINT("Jacob: copyMain", YELLOW);
-		this->printVec(copyMain);
 
-		std::vector<int>::iterator it_bound;		
-		if (static_cast<size_t>(increment) > copyMain.size())
+		std::vector<int>::iterator it_bound;	
+		if (static_cast<size_t>(this->mainIncrement) >= copyMain.size())
 		{
 			PRINT("Jacob: Increment superior to copyMain", WHITE);
-			it_bound = this->mainVec.end();
+			it_bound = this->mainVec.end() - 1;
 		}
 		else
 		{
 			PRINT("Jacob: Increment inferior to copyMain", WHITE);
-			it_bound  = std::find(this->mainVec.begin(), this->mainVec.end(), copyMain[increment]);
+			it_bound  = std::find(this->mainVec.begin(), this->mainVec.end(), copyMain[this->mainIncrement]);
 		}
 
+		PRINT("Jacob: copyMain", YELLOW);
+		this->printVec(copyMain);
 		int high = 0;
-		std::vector<int>::iterator it_temp = this->mainVec.begin();
-		while (it_temp != it_bound)
-		{
-			it_temp++;
-			high++;
-		}
-
+	
 		// std::vector<int>::iterator it = std::upper_bound(this->mainVec.begin(), it_bound, pend[increment]);		
 		std::vector<int>::iterator it;
 		// it = this->mainVec.end();
-		int low = 0;
-		if (nbInsidePacket == 1)
-			low = nbInsidePacket;
-		else
-			low = nbInsidePacket - 1;
-		it = binarySearch(this->mainVec, low, high, pend[increment], nbInsidePacket);
-
+		it = binarySearch(this->mainVec, it_bound , pend[this->mainIncrement], nbInsidePacket);
 		PRINT("BinaryJacob: result it_bound", YELLOW);
 		PRINT(*it_bound, WHITE);
 		PRINT("BinaryJacob: result this->mainVec[high]", YELLOW);
@@ -393,7 +380,7 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 						// PRINT(posInPend, WHITE);
 						// PRINT("\n", RESET);
 
-						int temp = pend[increment - k];
+						int temp = pend[this->mainIncrement - k];
 						PRINT("BinaryJacob: Inside for to inside main : temp :", BLUE);
 						PRINT(temp, WHITE);
 						PRINT("\n", RESET);
@@ -415,7 +402,7 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 						// PRINT(posInPend, WHITE);
 						// PRINT("\n", RESET);
 
-						int temp = pend[increment - k];
+						int temp = pend[this->mainIncrement - k];
 						PRINT("BinaryJacob: Inside for to inside main : temp :", BLUE);
 						PRINT(temp, WHITE);
 						PRINT("\n", RESET);
@@ -424,7 +411,7 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 						PRINT(*it, WHITE);
 
 						// if (this->countPend != 1)
-							this->mainVec.insert(it, temp);
+							this->mainVec.insert(it + 1, temp);
 						// else
 						// 	this->mainVec.insert(it, temp);
 						this->countPend--;
@@ -442,6 +429,7 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 		PRINT("\n", RESET);
 		PRINT("----------------------------------------------------------------------------------\n", RED);
 		count--;
+		this->mainIncrement -= nbInsidePacket;
 	}
 }
 
@@ -484,13 +472,22 @@ std::vector<int> keepOnlyLastElements(std::vector<int>& v, int nbInsidePackets)
     return (res);
 }
 
-std::vector<int>::iterator binarySearch(std::vector<int>& v, int low, int high, int target, int nbInsidePacket)
-{
+std::vector<int>::iterator binarySearch(std::vector<int>& v, std::vector<int>::iterator it_bound, int target, int nbInsidePacket)
+{	
+	int high = 0;
+	int	low = 0;
 	std::vector<int> temp;
 	if (nbInsidePacket != 1)
 		 temp = keepOnlyLastElements(v, nbInsidePacket);
 	else
 		temp = v;
+
+	std::vector<int>::iterator it_temp = temp.begin();
+	while (it_temp != temp.end() && *it_temp != *it_bound)
+	{
+		it_temp++;
+		high++;
+	}
     while (low < high) {
       
       	// Finding mid point
@@ -509,10 +506,10 @@ std::vector<int>::iterator binarySearch(std::vector<int>& v, int low, int high, 
     }
   	
 	std::vector<int>::iterator temp_it;
-	if (static_cast<size_t>(low) < v.size())
-		temp_it = v.begin() + low;
-	temp_it = v.end();
-
+	if (static_cast<size_t>(low) < temp.size())
+		temp_it = temp.begin() + low;
+	else
+		temp_it = temp.end();
 	return(std::find(v.begin(), v.end(), *temp_it));
 }
 
