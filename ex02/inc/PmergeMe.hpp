@@ -19,9 +19,11 @@
 #include <stdlib.h>
 #include <vector>
 
+
 class	PmergeMe
 {
 	public:
+	    static int nbr_of_comps;
 		std::vector<int>	mainVec;
 		std::vector<int>	remaining;
 		std::vector<int>*	dividedVec;
@@ -51,8 +53,12 @@ class	PmergeMe
 		void		resizeDividedArrayVec();
 		void		printArrayVecs(int sizeDividedVec);
 		std::vector<int>::iterator searchNumber(std::vector<int>::iterator it_bound, int value);
+
+
 	private:
 };
+
+int		PmergeMe::nbr_of_comps = 0;
 
 template <typename T> T strConvert(std::string& number)
 {
@@ -63,6 +69,16 @@ template <typename T> T strConvert(std::string& number)
 	if (ss.fail())
 		throw std::runtime_error("Error: problem inside argument");
 	return (number_convert);
+}
+
+template <typename T> bool _comp(T lv, T rv) {
+    PmergeMe::nbr_of_comps++;
+    return *lv < *rv;
+}
+
+void PmergeMe::sort_vec(std::vector<int>& vec) 
+{ 
+	merge_insertion_sort<std::vector<int> >(vec, 1); 
 }
 
 # endif

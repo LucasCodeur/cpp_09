@@ -52,6 +52,18 @@ PmergeMe::~PmergeMe (void)
 
 void debug_vec(const std::vector<int>& v);
 
+#include <cmath>
+
+int F(int n)
+{
+    int sum = 0;
+    for (int k = 1; k <= n; ++k) {
+        double value = (3.0 / 4.0) * k;
+        sum += static_cast<int>(ceil(log2(value)));
+    }
+    return sum;
+}
+
 static void		divideAndComp();
 
 void		PmergeMe::fordJonhson()
@@ -172,7 +184,6 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 			it_bound = this->mainVec.end() - 1;
 		else
 			it_bound  = std::find(this->mainVec.begin(), this->mainVec.end(), copyMain[this->mainIncrement]);
-		int high = 0;
 		std::vector<int>::iterator it;
 		it = binarySearch(this->mainVec, it_bound , pend[this->mainIncrement], nbInsidePacket);
 		if (*it > temp)
@@ -192,7 +203,6 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 					this->mainVec.insert(it + 1, temp);
 					this->countPend--;
 			}
-
 		}
 		count--;
 		this->mainIncrement -= nbInsidePacket;
