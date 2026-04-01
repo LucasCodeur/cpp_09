@@ -12,7 +12,7 @@
 
 #include <iostream>
 
-#include "ReversePolishNotation.hpp"
+#include "PmergeMe.hpp"
 
 int	main(int argc, char** argv)
 {

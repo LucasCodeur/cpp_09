@@ -20,11 +20,11 @@
 #include <vector>
 #include <deque>
 
+static int nbr_of_comps = 0;
 
 class	PmergeMe
 {
 	public:
-	    static int nbr_of_comps;
 		std::vector<int>	vec;
 		std::vector<int>	deq;
 		std::vector<int>	remaining;
@@ -71,11 +71,6 @@ template <typename T> T strConvert(std::string& number)
 	if (ss.fail())
 		throw std::runtime_error("Error: problem inside argument");
 	return (number_convert);
-}
-
-template <typename T> bool _comp(T lv, T rv) {
-    PmergeMe::nbr_of_comps++;
-    return *lv < *rv;
 }
 
 # endif

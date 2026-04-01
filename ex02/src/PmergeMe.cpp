@@ -66,6 +66,8 @@ int F(int n)
 
 void	PmergeMe::sortVec()
 {
+	// PRINT("Before: ", RED);
+	// printVec(this->vec);
 	int	size = vec.size();
 	size_t	sizeDividedVec = (size % 2 == 0) ? size / 2 : size / 2 + 1;
 	std::vector<int>*	dividedVec = new std::vector<int>[sizeDividedVec];
@@ -85,7 +87,7 @@ void	PmergeMe::sortVec()
 		jacobsthalNbs.push_back(jacobsthalNbs[0] + jacobsthalNbs[0] + jacobsthalNbs[1]);
 		jacobsthalNbs.erase(jacobsthalNbs.begin());
 	}
-	printVec(this->vec);
+	std::cout << nbr_of_comps << std::endl;
 	delete [] dividedVec;
 }
 
@@ -102,8 +104,10 @@ void		PmergeMe::divideAndComp(std::vector<int>*& dividedVec, size_t size, size_t
 	if (nbInsidePacket > size / 2)
 		return ;
 	divideAndComp(dividedVec, size,  nbInsidePacket, sizeDividedVec);
+
 	std::vector<int> pend;
 	std::vector<int> jacobsthalNbs;
+
 	jacobsthalNbs.push_back(1);
 	jacobsthalNbs.push_back(3);
 	this->cleanDividedVec(dividedVec, sizeDividedVec);
@@ -248,10 +252,15 @@ std::vector<int>::iterator binarySearch(
             low = mid + 1;
         else
             high = mid;
+	nbr_of_comps++;
     }
 
     if (low >= (int)temp.size())
+	{
+
+	nbr_of_comps++;
         return (v.end() - 1);
+	}
 
     int realIndex;
     if (nbInsidePacket == 1)
@@ -355,6 +364,7 @@ void	PmergeMe::swap(std::vector<int>*& dividedVec, int sizeDividedVec, int nbIns
 				temp = this->vec[i];
 				this->vec[i] = this->vec[i + 1];
 				this->vec[i + 1] = temp;
+				nbr_of_comps++;
 			}
 		}
 	}
@@ -364,6 +374,7 @@ void	PmergeMe::swap(std::vector<int>*& dividedVec, int sizeDividedVec, int nbIns
 		{
 			if (dividedVec[i].back() > dividedVec[i + 1].back())
 				dividedVec[i].swap(dividedVec[i + 1]);
+			nbr_of_comps++;
 		}
 	}
 }
@@ -414,10 +425,14 @@ void		PmergeMe::printVec(std::vector<int> vec)
 {
 	if (vec.size() != 0)
 	{
+		// std::cout << "After: ";
 		for (size_t i = 0; i < vec.size(); i++)
 		{
-			std::cout << vec[i] << " ";
+			std::cout << vec[i];
+			if (i != vec.size() - 1)
+				std::cout << ", "; 
 		}
+		// std::cout << "";
 	}
 	std::cout << std::endl;
 }
