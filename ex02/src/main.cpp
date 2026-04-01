@@ -33,7 +33,7 @@ static void	t_fordjohnson(int argc, char **argv)
 		PmergeMe	test;
 
 		test.fillVec(argc, argv);
-		test.fordJonhson();
+		test.sortVec();
 	}
 	catch (std::exception &e)
 	{

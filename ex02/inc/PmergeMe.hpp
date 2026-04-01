@@ -18,18 +18,19 @@
 #include <stdexcept>
 #include <stdlib.h>
 #include <vector>
+#include <deque>
 
 
 class	PmergeMe
 {
 	public:
 	    static int nbr_of_comps;
-		std::vector<int>	mainVec;
+		std::vector<int>	vec;
+		std::vector<int>	deq;
 		std::vector<int>	remaining;
-		std::vector<int>*	dividedVec;
-		int					originalSizeDividedVec;
-		int					mainIncrement;
-		int					countPend;
+		int			originalSizeDividedVec;
+		int			mainIncrement;
+		int			countPend;
 
 		PmergeMe	(void);
 		PmergeMe	(int _sizeStr);
@@ -39,26 +40,27 @@ class	PmergeMe
 		void		fordJonhson(void);
 		void		fillVec(int argc, char**argv);
 		void		printVec(std::vector<int> vec);
-		void		cleanDividedVec(int sizeDividedVec);
-		void		divideAndComp(size_t size, size_t nbInsidePacket, size_t sizeDividedVec);
-		void		fillDividedVec(int size, int nbInsidePacket, size_t* sizeDividedVec);
-		void		fillMainVec(size_t sizeDividedVec);
-		void		fillmainVecAndPend(std::vector<int>& pend, size_t sizeDividedVec, size_t nbInsidePacket);
-		int			computeIncrement(std::vector<int>& pend, size_t nbInsidePacket, std::vector<int>& jacobsthalNumber, int j, int& count);
-		// int	computeIncrement(std::vector<int>& pend, std::vector<int>& copyMain, size_t nbInsidePacket, std::vector<int>& jacobsthalNumber, int j, int& count);
+		void		cleanDividedVec(std::vector<int>*& dividedVec, int sizeDividedVec);
+		void		divideAndComp(std::vector<int>*& dividedVec, size_t size, size_t nbInsidePacket, size_t sizeDividedVec);
+		void		fillDividedVec(std::vector<int>*& dividedVec, int nbInsidePacket);
+		void		fillMainVec(std::vector<int>*& dividedVec, size_t sizeDividedVec);
+		void		fillMainAndPend(std::vector<int>*& dividedVec, std::vector<int>& pend, size_t sizeDividedVec, size_t nbInsidePacket);
+		int		computeIncrement(std::vector<int>& pend, size_t nbInsidePacket, std::vector<int>& jacobsthalNumber, int j, int& count);
 		void		binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int> copyMain, std::vector<int> jacobsthalNumber, int nbInsidePacket);
 		void		pushFirstPacket(std::vector<int> vec, int nbInsidePacket);
-		void		swap(int sizeDividedVec, int nbInsidePacket);
+		void		swap(std::vector<int>*& dividedVec, int sizeDividedVec, int nbInsidePacket);
 		void		fillPend(std::vector<int>* pend, size_t sizeDividedVec, size_t nbInsidePacket);
 		void		resizeDividedArrayVec();
 		void		printArrayVecs(int sizeDividedVec);
+
+		void		printArrayVecs(std::vector<int>*& dividedVec, int sizeDividedVec);
 		std::vector<int>::iterator searchNumber(std::vector<int>::iterator it_bound, int value);
-
-
+		void	sortVec();
+		void	sortDeque();
 	private:
 };
 
-int		PmergeMe::nbr_of_comps = 0;
+// int		PmergeMe::nbr_of_comps = 0;
 
 template <typename T> T strConvert(std::string& number)
 {
@@ -74,11 +76,6 @@ template <typename T> T strConvert(std::string& number)
 template <typename T> bool _comp(T lv, T rv) {
     PmergeMe::nbr_of_comps++;
     return *lv < *rv;
-}
-
-void PmergeMe::sort_vec(std::vector<int>& vec) 
-{ 
-	merge_insertion_sort<std::vector<int> >(vec, 1); 
 }
 
 # endif
