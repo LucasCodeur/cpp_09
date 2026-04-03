@@ -25,5 +25,5 @@
 #define WHITE     "\033[37m"
 
 // --- Macro PRINT(color, x)
-#define PRINT(x, color) \
-    std::cout << color << x << RESET << std::endl;
+#define PRINT(x, color, newline) \
+    std::cout << color << x << RESET << newline;

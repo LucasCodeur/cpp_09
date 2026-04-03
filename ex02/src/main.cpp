@@ -16,8 +16,8 @@
 #include <iostream>
 #include <iomanip>
 
-static void	t_strtod_error(std::string test);
-static void	t_parsing(int argc, char** argv);
+// static void	t_strtod_error(std::string test);
+// static void	t_parsing(int argc, char** argv);
 static void	t_fordjohnson(int argc, char **argv);
 
 int	main(int argc, char** argv)
@@ -33,25 +33,8 @@ static void	t_fordjohnson(int argc, char **argv)
 
 	try 
 	{
-		clock_t start_vec = clock();
 		PmergeMe	test;
-		// std::cout << "\n";
-		test.fillVec(argc, argv);
-		// std::cout << "\033[31mBefore\033[00m: ";
-		// test.printVec(test.vec);
-		test.sortVec();
-		clock_t end_vec = clock();
-		double time_elapsed_vec = static_cast<double>(end_vec - start_vec) / CLOCKS_PER_SEC;
-		std::cout << "After: ";
-		test.printVec(test.vec);
-		// std::cout << "\n";
-		// std::cout << "Time to process a range of " << test.vec.size()
-		// 		  << " elements with std::vector: " << std::fixed << std::setprecision(6)
-		// 		  << time_elapsed_vec << "s\n";
-		// std::cout << "Time to process a range of " << test.vec.size()
-		// 		  << " elements with std::dequeu: " << std::fixed << std::setprecision(6)
-		// 		  << time_elapsed_vec << "s\n";
-		std::cout << "Number of comparisons: " << test.nbr_of_comps << "\n";
+		test.to_sort(argc, argv);
 	}
 	catch (std::exception &e)
 	{
@@ -60,29 +43,29 @@ static void	t_fordjohnson(int argc, char **argv)
 	
 }
 
-static void	t_parsing(int argc, char** argv)
-{
-	try 
-	{
-		PmergeMe	test;
-
-		test.fillVec(argc, argv);
-	}
-	catch (std::exception &e)
-	{
-		std::cout << e.what() << std::endl;
-	}
-}
-
-static void	t_strtod_error(std::string test)
-{
-	try 
-	{
-		int number = strConvert<int>(test);
-		std::cout << number << std::endl;
-	}
-	catch (std::exception &e)
-	{
-		std::cout << e.what() << std::endl;
-	}
-}
+// static void	t_parsing(int argc, char** argv)
+// {
+// 	try 
+// 	{
+// 		PmergeMe	test;
+//
+// 		test.fillVec(argc, argv);
+// 	}
+// 	catch (std::exception &e)
+// 	{
+// 		std::cout << e.what() << std::endl;
+// 	}
+// }
+//
+// static void	t_strtod_error(std::string test)
+// {
+// 	try 
+// 	{
+// 		int number = strConvert<int>(test);
+// 		std::cout << number << std::endl;
+// 	}
+// 	catch (std::exception &e)
+// 	{
+// 		std::cout << e.what() << std::endl;
+// 	}
+// }
