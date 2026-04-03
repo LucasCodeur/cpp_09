@@ -31,12 +31,10 @@ int	main(int argc, char** argv)
 static void	t_fordjohnson(int argc, char **argv)
 {
 
-	static int nbr_of_comps = 0;
 	try 
 	{
 		clock_t start_vec = clock();
 		PmergeMe	test;
-
 		// std::cout << "\n";
 		test.fillVec(argc, argv);
 		// std::cout << "\033[31mBefore\033[00m: ";
@@ -44,16 +42,16 @@ static void	t_fordjohnson(int argc, char **argv)
 		test.sortVec();
 		clock_t end_vec = clock();
 		double time_elapsed_vec = static_cast<double>(end_vec - start_vec) / CLOCKS_PER_SEC;
-		std::cout << "After:  ";
+		std::cout << "After: ";
 		test.printVec(test.vec);
 		// std::cout << "\n";
-		std::cout << "Time to process a range of " << test.vec.size()
-				  << " elements with std::vector: " << std::fixed << std::setprecision(6)
-				  << time_elapsed_vec << "s\n";
-		std::cout << "Time to process a range of " << test.vec.size()
-				  << " elements with std::dequeu: " << std::fixed << std::setprecision(6)
-				  << time_elapsed_vec << "s\n";
-		std::cout << "Number of comparisons: " << nbr_of_comps << '\n';
+		// std::cout << "Time to process a range of " << test.vec.size()
+		// 		  << " elements with std::vector: " << std::fixed << std::setprecision(6)
+		// 		  << time_elapsed_vec << "s\n";
+		// std::cout << "Time to process a range of " << test.vec.size()
+		// 		  << " elements with std::dequeu: " << std::fixed << std::setprecision(6)
+		// 		  << time_elapsed_vec << "s\n";
+		std::cout << "Number of comparisons: " << test.nbr_of_comps << "\n";
 	}
 	catch (std::exception &e)
 	{

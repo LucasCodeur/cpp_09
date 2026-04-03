@@ -19,6 +19,8 @@
 #include <stdexcept>
 #include <vector>
 
+int PmergeMe::nbr_of_comps = 0;
+
 PmergeMe::PmergeMe (void)
 {
 	// std::cout << "PmergeMe Default constructeur called\n";
@@ -50,7 +52,6 @@ PmergeMe::~PmergeMe (void)
 	// std::cout << "PmergeMe Destructeur called\n";
 }
 
-void debug_vec(const std::vector<int>& v);
 
 #include <cmath>
 
@@ -87,7 +88,6 @@ void	PmergeMe::sortVec()
 		jacobsthalNbs.push_back(jacobsthalNbs[0] + jacobsthalNbs[0] + jacobsthalNbs[1]);
 		jacobsthalNbs.erase(jacobsthalNbs.begin());
 	}
-	std::cout << nbr_of_comps << std::endl;
 	delete [] dividedVec;
 }
 
@@ -156,20 +156,19 @@ std::vector<int>::iterator binarySearch(std::vector<int>& v, std::vector<int>::i
 void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int> copyMain, std::vector<int> jacobsthalNumber, int nbInsidePacket)
 {
 	size_t	sizePend = pend.size();
-	vec.reserve(vec.size() + sizePend);
 	if (sizePend == 0)
 		return ;
+
 	if (jacobsthalNumber[1] == 3)
 		this->pushFirstPacket(pend, nbInsidePacket);
+
 	int	count = jacobsthalNumber[1] - jacobsthalNumber[0];
+
 	for (size_t j = 0; count > 0 && this->countPend > 0; j += nbInsidePacket)	
 	{
 
-		int increment = 0;
 		if (this->mainIncrement == 0)
-			increment = computeIncrement(pend, nbInsidePacket, jacobsthalNumber, j, count);
-		if (increment < 0 || increment >= static_cast<int>(pend.size()))
-			return ;
+			computeIncrement(pend, nbInsidePacket, jacobsthalNumber, j, count);
 		int	temp = pend[this->mainIncrement];
 		std::vector<int>::iterator it_bound;	
 		if (static_cast<size_t>(this->mainIncrement) >= copyMain.size())
@@ -201,19 +200,6 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 	}
 }
 
-std::vector<int>::iterator PmergeMe::searchNumber(std::vector<int>::iterator it_bound, int value)
-{
-	std::vector<int>::iterator it;
-
-	it = it_bound;
-	for (std::vector<int>::iterator it = this->vec.begin(); it != it_bound; it++)
-	{
-		if (*it >= value)	
-			return (it);
-	}
-	return (it);
-}
-
 std::vector<int> keepOnlyLastElements(std::vector<int>& v, int nbInsidePackets)
 {
     std::vector<int> res;
@@ -232,43 +218,41 @@ std::vector<int>::iterator binarySearch(
     int target,
     int nbInsidePacket)
 {
-    int low = 0;
-    int high = 0;
+	int low = 0;
+	int high = 0;
+	std::vector<int> temp;
 
-    std::vector<int> temp;
-    if (nbInsidePacket != 1)
-        temp = keepOnlyLastElements(v, nbInsidePacket);
-    else
-        temp = v;
+	if (nbInsidePacket != 1)
+		temp = keepOnlyLastElements(v, nbInsidePacket);
+	else
+		temp = v;
 
-    int boundIndex = (it_bound - v.begin()) / nbInsidePacket;
-    high = boundIndex + 1;
+	int boundIndex = (it_bound - v.begin()) / nbInsidePacket;
 
-    while (low < high)
-    {
-        int mid = low + (high - low) / 2;
+	high = boundIndex + 1;
 
-        if (temp[mid] <= target)
-            low = mid + 1;
-        else
-            high = mid;
-	nbr_of_comps++;
-    }
-
-    if (low >= (int)temp.size())
+	while (low < high)
 	{
+		int mid = low + (high - low) / 2;
 
-	nbr_of_comps++;
-        return (v.end() - 1);
+		if (temp[mid] <= target)
+		    low = mid + 1;
+		else
+		    high = mid;
+		PmergeMe::nbr_of_comps++;
 	}
 
-    int realIndex;
-    if (nbInsidePacket == 1)
-        realIndex = low;
-    else
-        realIndex = (low + 1) * nbInsidePacket - 1;
+	if (low >= (int)temp.size())
+		return (v.end() - 1);
 
-    return (v.begin() + realIndex);
+	int realIndex;
+
+	if (nbInsidePacket == 1)
+		realIndex = low;
+	else
+		realIndex = (low + 1) * nbInsidePacket - 1;
+
+	return (v.begin() + realIndex);
 }
 
 void	PmergeMe::fillMainAndPend(std::vector<int>*& dividedVec, std::vector<int>& pend, size_t sizeDividedVec, size_t nbInsidePacket)
@@ -354,8 +338,8 @@ void	PmergeMe::swap(std::vector<int>*& dividedVec, int sizeDividedVec, int nbIns
 {
 	if (nbInsidePacket == 1)
 	{
-		int			temp = 0;
-		size_t		size = this->vec.size();
+		int	temp = 0;
+		size_t	size = this->vec.size();
 
 		for (size_t i = 0; i < size; i += 2)
 		{
@@ -364,8 +348,8 @@ void	PmergeMe::swap(std::vector<int>*& dividedVec, int sizeDividedVec, int nbIns
 				temp = this->vec[i];
 				this->vec[i] = this->vec[i + 1];
 				this->vec[i + 1] = temp;
-				nbr_of_comps++;
 			}
+			PmergeMe::nbr_of_comps++;
 		}
 	}
 	else
@@ -374,7 +358,7 @@ void	PmergeMe::swap(std::vector<int>*& dividedVec, int sizeDividedVec, int nbIns
 		{
 			if (dividedVec[i].back() > dividedVec[i + 1].back())
 				dividedVec[i].swap(dividedVec[i + 1]);
-			nbr_of_comps++;
+			PmergeMe::nbr_of_comps++;
 		}
 	}
 }
@@ -425,14 +409,12 @@ void		PmergeMe::printVec(std::vector<int> vec)
 {
 	if (vec.size() != 0)
 	{
-		// std::cout << "After: ";
 		for (size_t i = 0; i < vec.size(); i++)
 		{
 			std::cout << vec[i];
 			if (i != vec.size() - 1)
 				std::cout << ", "; 
 		}
-		// std::cout << "";
 	}
 	std::cout << std::endl;
 }
@@ -443,22 +425,5 @@ void	PmergeMe::printArrayVecs(std::vector<int>*& dividedVec, int sizeDividedVec)
 	{
 		if (dividedVec[i].size() != 0)
 			this->printVec(dividedVec[i]);
-	}
-}
-
-void debug_vec(const std::vector<int>& v)
-{
-	PRINT("size: ", RED);
-	PRINT(v.size(), WHITE)
-	PRINT("capacity: ", RED);
-	PRINT(v.capacity(), WHITE);
-	PRINT("data ptr: ", RED);
-	PRINT((void*)v.data(), WHITE);
-	for (size_t i=0; i<v.capacity(); i++) 
-	{
-		PRINT("index ", RED);
-		PRINT(i, WHITE);
-		PRINT(": ", RED);
-		PRINT(v[i], WHITE);
 	}
 }
