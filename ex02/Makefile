@@ -6,7 +6,7 @@
 #    By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/18 12:51:21 by lud-adam          #+#    #+#              #
-#    Updated: 2026/02/24 11:16:59 by lud-adam         ###   ########.fr        #
+#    Updated: 2026/04/03 14:27:05 by lud-adam         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@
 CC = c++
 CC_DEBUG = g++
 CFLAGS = -Wall -Wextra -Werror -MMD -std=c++98
-CFLAGS_DEBUG = -Wall -Wextra -MMD -g3 -D DEBUG=1
+CFLAGS_DEBUG = -Wall -Wextra -MMD -std=c++98 -g3 -D DEBUG=1
 NAME = PmergeMe 
 P_SRC = src/
 P_OBJ = .obj/
