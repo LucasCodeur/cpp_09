@@ -16,8 +16,10 @@
 #include <algorithm>
 #include <cctype>
 #include <cstddef>
-#include <stdexcept>
+#include <iomanip>
 #include <vector>
+
+int PmergeMe::nbr_of_comps = 0;
 
 PmergeMe::PmergeMe (void)
 {
@@ -54,7 +56,7 @@ void debug_vec(const std::vector<int>& v);
 
 static void		divideAndComp();
 
-void		PmergeMe::fordJonhson()
+void		PmergeMe::sortVec()
 {
 	size_t	sizeDividedVec;
 	int	size = this->mainVec.size();
@@ -86,6 +88,50 @@ void		PmergeMe::fordJonhson()
 	printVec(this->mainVec);
 	delete [] this->dividedVec;
 }
+
+void	PmergeMe::to_sort(int argc, char **argv)
+{
+	fillContainers(argc, argv);
+
+	std::vector<int>	notSorted = this->mainVec;
+
+	clock_t start_vec = clock();
+	this->sortVec();
+	clock_t end_vec = clock();
+
+	double time_elapsed_vec = static_cast<double>(end_vec - start_vec) / CLOCKS_PER_SEC;
+
+	this->printInformation(notSorted, time_elapsed_vec, 0);
+}
+//
+// void	PmergeMe::sortVec(std::vector<int>& vec)
+// {
+// 	int			size = vec.size();
+// 	size_t			sizeDividedVec = (size % 2 == 0) ? size / 2 : size / 2 + 1;
+// 	this->sizeDividedVec = sizeDividedVec;
+// 	std::vector<int>*	dividedVec = new std::vector<int>[sizeDividedVec + 4];
+// 	std::vector<int>	jacobsthalNbs;
+// 	std::vector<int>	pend;
+//
+// 	dividedVec[0] = this->vec;
+// 	divideAndComp(dividedVec, size, 1, sizeDividedVec);
+//
+// 	PRINT("Sort Vec: print array vec after divided and comp", RED, "\n");
+// 	this->printArrayVecs(dividedVec, sizeDividedVec);
+// 	fillMainAndPend(dividedVec, sizeDividedVec, 1);
+//
+// 	jacobsthalNbs.push_back(1);
+// 	jacobsthalNbs.push_back(3);
+// 	std::vector<int> copyMain = dividedVec[0];
+// 	while (this->countPend > 0)
+// 	{
+// 		this->mainIncrement = 0;
+// 		binaryJacobsthalNbsInsert(dividedVec, copyMain, jacobsthalNbs, 1);
+// 		jacobsthalNbs.push_back(jacobsthalNbs[0] + jacobsthalNbs[0] + jacobsthalNbs[1]);
+// 		jacobsthalNbs.erase(jacobsthalNbs.begin());
+// 	}
+// 	delete [] dividedVec;
+// }
 
 void		PmergeMe::divideAndComp(size_t size, size_t nbInsidePacket, size_t sizeDividedVec)
 {
@@ -373,38 +419,6 @@ void		PmergeMe::fillMainVec(size_t sizeDividedVec)
 	}
 }
 
-void		PmergeMe::fillVec(int argc, char**argv)
-{
-	std::string str;
-	std::string substr;
-	size_t		pos = 0;
-	int			number = 0;
-
-	for (int i = 1; i < argc; i++)
-	{
-		str = argv[i];	
-		if (str.empty() == true)
-			continue ;
-		while (1)
-		{
-			pos = str.find(" ");
-			if (pos != std::string::npos)
-			{
-				substr = str.substr(0, pos);
-				number = strConvert<int>(substr);
-				this->mainVec.push_back(number);
-				str.erase(0, pos + 1);
-			}
-			else
-			{
-				number = strConvert<int>(str);
-				this->mainVec.push_back(number);
-				break ;
-			}
-		}
-	}
-}
-
 void		PmergeMe::printVec(std::vector<int> vec)
 {
 	if (vec.size() != 0)
@@ -426,19 +440,71 @@ void	PmergeMe::printArrayVecs(int sizeDividedVec)
 	}
 }
 
-void debug_vec(const std::vector<int>& v)
+void	PmergeMe::printInformation(std::vector<int> notSorted, double time_elapsed_vec, double time_elapsed_deq)
 {
-	PRINT("size: ", RED);
-	PRINT(v.size(), WHITE)
-	PRINT("capacity: ", RED);
-	PRINT(v.capacity(), WHITE);
-	PRINT("data ptr: ", RED);
-	PRINT((void*)v.data(), WHITE);
-	for (size_t i=0; i<v.capacity(); i++) 
+
+	std::cout << "\n";
+	PRINT("Before: ", RED, "")
+	printVec(notSorted);
+	PRINT("After: ", GREEN, "")
+	printVec(this->mainVec);
+	std::cout << "Time to process a range of " << this->mainVec.size()
+			  << " elements with std::vector: " << std::fixed << std::setprecision(6)
+			  << time_elapsed_vec << "s\n";
+	std::cout << "Time to process a range of " << this->mainVec.size()
+			  << " elements with std::dequeu: " << std::fixed << std::setprecision(6)
+			  << time_elapsed_deq << "s\n";
+	std::cout << "Number of comparisons: " << this->nbr_of_comps << "\n";
+
+}
+
+static bool	checkDuplicates(std::vector<int>& vec, int nb);
+
+bool		PmergeMe::fillContainers(int argc, char**argv)
+{
+	std::string	str;
+	std::string	substr;
+	size_t		pos = 0;
+	int		number = 0;
+
+	for (int i = 1; i < argc; i++)
 	{
-		PRINT("index ", RED);
-		PRINT(i, WHITE);
-		PRINT(": ", RED);
-		PRINT(v[i], WHITE);
+		str = argv[i];	
+		if (str.empty() == true)
+			continue ;
+		while (1)
+		{
+			pos = str.find(" ");
+			if (pos != std::string::npos)
+			{
+				substr = str.substr(0, pos);
+				number = strConvert<int>(substr);
+				if (checkDuplicates(this->mainVec, number) == false)
+					return (false);
+				this->mainVec.push_back(number);
+				this->mainDeq.push_back(number);
+				str.erase(0, pos + 1);
+			}
+			else
+			{
+				number = strConvert<int>(str);
+				this->mainVec.push_back(number);
+				this->mainDeq.push_back(number);
+				break ;
+			}
+		}
 	}
+	return (true);
+}
+
+static bool	checkDuplicates(std::vector<int>& vec, int nb)
+{
+	int	size = vec.size();
+	for (int i = 0; i < size; i++) 
+	{
+		if (nb == vec[i])
+			return (false);
+
+	}
+	return (true);
 }

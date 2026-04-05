@@ -14,8 +14,8 @@
 
 #include "PmergeMe.hpp"
 
-static void	t_strtod_error(std::string test);
-static void	t_parsing(int argc, char** argv);
+// static void	t_strtod_error(std::string test);
+// static void	t_parsing(int argc, char** argv);
 static void	t_fordjohnson(int argc, char **argv);
 
 int	main(int argc, char** argv)
@@ -28,12 +28,11 @@ int	main(int argc, char** argv)
 
 static void	t_fordjohnson(int argc, char **argv)
 {
+
 	try 
 	{
 		PmergeMe	test;
-
-		test.fillVec(argc, argv);
-		test.fordJonhson();
+		test.to_sort(argc, argv);
 	}
 	catch (std::exception &e)
 	{
@@ -42,29 +41,29 @@ static void	t_fordjohnson(int argc, char **argv)
 	
 }
 
-static void	t_parsing(int argc, char** argv)
-{
-	try 
-	{
-		PmergeMe	test;
-
-		test.fillVec(argc, argv);
-	}
-	catch (std::exception &e)
-	{
-		std::cout << e.what() << std::endl;
-	}
-}
-
-static void	t_strtod_error(std::string test)
-{
-	try 
-	{
-		int number = strConvert<int>(test);
-		std::cout << number << std::endl;
-	}
-	catch (std::exception &e)
-	{
-		std::cout << e.what() << std::endl;
-	}
-}
+// static void	t_parsing(int argc, char** argv)
+// {
+// 	try 
+// 	{
+// 		PmergeMe	test;
+//
+// 		test.fillVec(argc, argv);
+// 	}
+// 	catch (std::exception &e)
+// 	{
+// 		std::cout << e.what() << std::endl;
+// 	}
+// }
+//
+// static void	t_strtod_error(std::string test)
+// {
+// 	try 
+// 	{
+// 		int number = strConvert<int>(test);
+// 		std::cout << number << std::endl;
+// 	}
+// 	catch (std::exception &e)
+// 	{
+// 		std::cout << e.what() << std::endl;
+// 	}
+// }
