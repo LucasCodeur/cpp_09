@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 17:16:20 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/03/26 11:45:53 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/04/06 12:03:03 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,10 @@ PmergeMe::~PmergeMe (void)
 
 void		PmergeMe::sortVec()
 {
-	std::vector<int> remaining;
-	size_t	sizeDividedVec;
+	std::vector<int>*	dividedVec = NULL;
+	std::vector<int>	pend;
+	std::vector<int>	remaining;
+	size_t				sizeDividedVec;
 
 	int	size = this->mainVec.size();
 
@@ -65,12 +67,11 @@ void		PmergeMe::sortVec()
 		sizeDividedVec = size / 2;
 	else
 		sizeDividedVec = size / 2 + 1;
-
-	std::vector<int>*	dividedVec = new std::vector<int>[sizeDividedVec];
+	dividedVec= new std::vector<int>[sizeDividedVec];
 	divideAndComp(dividedVec, size, 1, sizeDividedVec);
-
-	std::vector<int> pend;
 	fillmainVecAndPend(dividedVec, pend, remaining, sizeDividedVec, 1);
+	PRINT("sortVec", RED, "\n");
+	printVec(this->mainVec);
 	binaryJacobsthalNbsInsert(pend, 1);
 	printVec(this->mainVec);
 	delete [] dividedVec;
@@ -86,6 +87,8 @@ void	PmergeMe::to_sort(int argc, char **argv)
 	std::vector<int>	notSorted = this->mainVec;
 
 	clock_t start_vec = clock();
+	PRINT("not sorted", RED, "\n");
+	printVec(notSorted);
 	this->sortVec();
 	clock_t end_vec = clock();
 
@@ -104,22 +107,29 @@ void		PmergeMe::divideAndComp(std::vector<int>*& dividedVec, size_t size, size_t
 		this->fillDividedVec(dividedVec, nbInsidePacket);
 	}
 	this->swap(dividedVec, sizeDividedVec, nbInsidePacket);
+	PRINT("dividedAndComp", RED, "\n");
+	printVec(this->mainVec);
 	this->fillMainVec(dividedVec, sizeDividedVec);
+	PRINT("dividedAndComp just before nbInsidePacket", RED, "\n");
+	printVec(this->mainVec);
 	nbInsidePacket *= 2;
 	if (nbInsidePacket > size / 2)
+	{
+		PRINT("Here", BLUE, "\n");
 		return ;
+	}
 	divideAndComp(dividedVec, size, nbInsidePacket, sizeDividedVec);
 	std::vector<int> pend;
 	this->cleanDividedVec(dividedVec, sizeDividedVec);
 	this->fillDividedVec(dividedVec, nbInsidePacket);
 	fillmainVecAndPend(dividedVec, pend, remaining, sizeDividedVec, nbInsidePacket);
+	PRINT("dividedAndComp", RED, "\n");
+	printVec(this->mainVec);
 	binaryJacobsthalNbsInsert(pend, nbInsidePacket);	
 	if (remaining.empty() == true)
 		return ;
 	for (size_t i = 0; i < remaining.size(); i++)
-	{
 		this->mainVec.push_back(remaining[i]);
-	}
 	remaining.clear();
 }
 
@@ -132,7 +142,6 @@ int	PmergeMe::computeIncrement(std::vector<int>& pend, size_t nbInsidePacket, st
 	increment = ((jacobsthalNbs[1]) * nbInsidePacket) - 1 - j;
 	if (increment >= pendSize)
 		increment = pendSize - 1;
-	increment = increment;
 	return (increment);
 }
 
@@ -276,10 +285,7 @@ void	PmergeMe::fillmainVecAndPend(std::vector<int>*& dividedVec, std::vector<int
 		std::vector<int> temp;
 		size_t			count; 
 
-		if (this->mainVec.size() % 2 == 0)
-			count = this->mainVec.size();
-		else
-			count = this->mainVec.size() - 1;
+		count = this->mainVec.size();
 		for (size_t i = 0;  i < count; i++)
 		{
 			if (i % 2 == 0)
@@ -290,32 +296,35 @@ void	PmergeMe::fillmainVecAndPend(std::vector<int>*& dividedVec, std::vector<int
 		this->mainVec.clear();
 		this->mainVec = temp;
 	}
-	for (size_t j = 0; j < sizeDividedVec; j++)
+	else
 	{
-		if (j % 2 == 0)
+		for (size_t j = 0; j < sizeDividedVec; j++)
 		{
-			if (dividedVec[j].size() == nbInsidePacket)
+			if (j % 2 == 0)
 			{
-				for (size_t k = 0; k < dividedVec[j].size(); k++)
-					pend.push_back(dividedVec[j][k]);
+				if (dividedVec[j].size() == nbInsidePacket)
+				{
+					for (size_t k = 0; k < dividedVec[j].size(); k++)
+						pend.push_back(dividedVec[j][k]);
+				}
+				else
+				{
+					for (size_t k = 0; k < dividedVec[j].size(); k++)
+						remaining.push_back(dividedVec[j][k]);
+				}
 			}
 			else
 			{
-				for (size_t k = 0; k < dividedVec[j].size(); k++)
-					remaining.push_back(dividedVec[j][k]);
-			}
-		}
-		else
-		{
-			if (dividedVec[j].size() == nbInsidePacket)
-			{
-				for (size_t k = 0; k < dividedVec[j].size(); k++)
-					this->mainVec.push_back(dividedVec[j][k]);
-			}
-			else
-			{
-				for (size_t k = 0; k < dividedVec[j].size(); k++)
-					remaining.push_back(dividedVec[j][k]);
+				if (dividedVec[j].size() == nbInsidePacket)
+				{
+					for (size_t k = 0; k < dividedVec[j].size(); k++)
+						this->mainVec.push_back(dividedVec[j][k]);
+				}
+				else
+				{
+					for (size_t k = 0; k < dividedVec[j].size(); k++)
+						remaining.push_back(dividedVec[j][k]);
+				}
 			}
 		}
 	}
