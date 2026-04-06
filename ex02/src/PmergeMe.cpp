@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 17:16:20 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/04/06 12:03:03 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/04/06 12:14:26 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,12 +70,11 @@ void		PmergeMe::sortVec()
 	dividedVec= new std::vector<int>[sizeDividedVec];
 	divideAndComp(dividedVec, size, 1, sizeDividedVec);
 	fillmainVecAndPend(dividedVec, pend, remaining, sizeDividedVec, 1);
-	PRINT("sortVec", RED, "\n");
-	printVec(this->mainVec);
 	binaryJacobsthalNbsInsert(pend, 1);
-	printVec(this->mainVec);
 	delete [] dividedVec;
 }
+
+static bool	isSorted(std::vector<int> vec);
 
 void	PmergeMe::to_sort(int argc, char **argv)
 {
@@ -87,9 +86,8 @@ void	PmergeMe::to_sort(int argc, char **argv)
 	std::vector<int>	notSorted = this->mainVec;
 
 	clock_t start_vec = clock();
-	PRINT("not sorted", RED, "\n");
-	printVec(notSorted);
-	this->sortVec();
+	if (isSorted(this->mainVec) == false)
+		this->sortVec();
 	clock_t end_vec = clock();
 
 	double time_elapsed_vec = static_cast<double>(end_vec - start_vec) / CLOCKS_PER_SEC;
@@ -107,24 +105,15 @@ void		PmergeMe::divideAndComp(std::vector<int>*& dividedVec, size_t size, size_t
 		this->fillDividedVec(dividedVec, nbInsidePacket);
 	}
 	this->swap(dividedVec, sizeDividedVec, nbInsidePacket);
-	PRINT("dividedAndComp", RED, "\n");
-	printVec(this->mainVec);
 	this->fillMainVec(dividedVec, sizeDividedVec);
-	PRINT("dividedAndComp just before nbInsidePacket", RED, "\n");
-	printVec(this->mainVec);
 	nbInsidePacket *= 2;
 	if (nbInsidePacket > size / 2)
-	{
-		PRINT("Here", BLUE, "\n");
 		return ;
-	}
 	divideAndComp(dividedVec, size, nbInsidePacket, sizeDividedVec);
 	std::vector<int> pend;
 	this->cleanDividedVec(dividedVec, sizeDividedVec);
 	this->fillDividedVec(dividedVec, nbInsidePacket);
 	fillmainVecAndPend(dividedVec, pend, remaining, sizeDividedVec, nbInsidePacket);
-	PRINT("dividedAndComp", RED, "\n");
-	printVec(this->mainVec);
 	binaryJacobsthalNbsInsert(pend, nbInsidePacket);	
 	if (remaining.empty() == true)
 		return ;
@@ -482,6 +471,18 @@ static bool	checkDuplicates(std::vector<int>& vec, int nb)
 		if (nb == vec[i])
 			return (false);
 
+	}
+	return (true);
+}
+
+static bool	isSorted(std::vector<int> vec)
+{
+	int size = vec.size();
+
+	for (int i = 1; i < size; i++)
+	{
+		if (vec[i - 1] > vec[i])
+			return (false);
 	}
 	return (true);
 }

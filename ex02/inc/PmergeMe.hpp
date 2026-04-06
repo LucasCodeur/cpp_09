@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 14:47:29 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/03/26 11:00:28 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/04/06 12:06:52 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,42 +66,3 @@ template <typename T> T strConvert(std::string& number)
 }
 
 # endif
-
-// class	PmergeMe
-// {
-// 	public:
-// 		std::vector<int>	remaining;
-// 		int			sizeDividedVec;
-// 		int			mainIncrement;
-// 		int			countPend;
-//
-// 		PmergeMe	(void);
-// 		PmergeMe	(int _sizeStr);
-// 		PmergeMe	(const PmergeMe &);
-// 		~PmergeMe	(void);
-// 		PmergeMe&	operator= ( const PmergeMe &);
-// 		void		fordJonhson(void);
-// 		void		fillVec(int argc, char**argv);
-// 		void		printVec(std::vector<int> vec);
-// 		void		cleanDividedVec(std::vector<int>*& dividedVec, int sizeDividedVec);
-// 		void		divideAndComp(std::vector<int>*& dividedVec, size_t size, size_t nbInsidePacket, size_t sizeDividedVec);
-// 		void		fillDividedVec(std::vector<int>*& dividedVec, int nbInsidePacket);
-// 		void		fillMainVec(std::vector<int>*& dividedVec, size_t sizeDividedVec);
-// 		void		fillMainAndPend(std::vector<int>*& dividedVec, size_t sizeDividedVec, size_t nbInsidePacket);
-// 		int			computeIncrement(std::vector<int>& pend, size_t nbInsidePacket, std::vector<int>& jacobsthalNumber, int j);
-// 		void		pushFirstPacket(std::vector<int>*& DividedVec, std::vector<int> vec, int nbInsidePacket);
-//
-// 		void		binaryJacobsthalNbsInsert(std::vector<int>*& DividedVec, std::vector<int> copyMain, std::vector<int> jacobsthalNumber, int nbInsidePacket);
-// 		void		swap(std::vector<int>*& dividedVec, int sizeDividedVec, int nbInsidePacket);
-// 		void		fillPend(std::vector<int>* pend, size_t sizeDividedVec, size_t nbInsidePacket);
-// 		void		resizeDividedArrayVec();
-// 		void		printArrayVecs(std::vector<int>*& dividedVec, int sizeDividedVec);
-// 		std::vector<int>::iterator searchNumber(std::vector<int>::iterator it_bound, int value);
-// 		void	printInformation(std::vector<int> notSorted, double time_elapsed_vec, double time_elapsed_deq);
-// 		void	to_sort(int argc, char **argv);
-// 		void	sortVec(std::vector<int>& vec);
-// 		void	sortDeque();
-//
-// 		bool	fillContainers(int argc, char**argv);
-// 	private:
-// };
