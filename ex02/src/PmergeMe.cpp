@@ -78,8 +78,11 @@ void		PmergeMe::sortVec()
 
 void	PmergeMe::to_sort(int argc, char **argv)
 {
-	fillContainers(argc, argv);
-
+	if (fillContainers(argc, argv) == false)
+	{
+		PRINT("Error: Duplicate number", RED, "\n");
+		return ;
+	}
 	std::vector<int>	notSorted = this->mainVec;
 
 	clock_t start_vec = clock();
@@ -125,11 +128,11 @@ int	PmergeMe::computeIncrement(std::vector<int>& pend, size_t nbInsidePacket, st
 	size_t	increment = 0;
 	size_t	pendSize = pend.size();
 
-	this->mainIncrement = 0;
+	increment = 0;
 	increment = ((jacobsthalNbs[1]) * nbInsidePacket) - 1 - j;
 	if (increment >= pendSize)
 		increment = pendSize - 1;
-	this->mainIncrement = increment;
+	increment = increment;
 	return (increment);
 }
 
@@ -164,30 +167,29 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, int nbInsidePac
 
 	while (countPend > 0)
 	{
-		this->mainIncrement = 0;
+		int increment = 0;
 		int	count = jacobsthalNbs[1] - jacobsthalNbs[0];
 
 		for (size_t j = 0; count > 0 && countPend > 0; j += nbInsidePacket)	
 		{
-			int increment = 0;
-			if (this->mainIncrement == 0)
+			if (increment == 0)
 				increment = computeIncrement(pend, nbInsidePacket, jacobsthalNbs, j);
 			if (increment < 0 || increment >= static_cast<int>(pend.size()))
 				return ;
-			int	temp = pend[this->mainIncrement];
+			int	temp = pend[increment];
 			std::vector<int>::iterator it_bound;	
-			if (static_cast<size_t>(this->mainIncrement) >= copyMain.size())
+			if (static_cast<size_t>(increment) >= copyMain.size())
 				it_bound = this->mainVec.end() - 1;
 			else
-				it_bound  = std::find(this->mainVec.begin(), this->mainVec.end(), copyMain[this->mainIncrement]);
+				it_bound  = std::find(this->mainVec.begin(), this->mainVec.end(), copyMain[increment]);
 			std::vector<int>::iterator it;
 
-			it = binarySearch(this->mainVec, it_bound , pend[this->mainIncrement], nbInsidePacket);
+			it = binarySearch(this->mainVec, it_bound , pend[increment], nbInsidePacket);
 			if (*it > temp)
 			{
 				for (int k = 0; k < nbInsidePacket; k++)
 				{
-						int temp = pend[this->mainIncrement - k];
+						int temp = pend[increment - k];
 						this->mainVec.insert(it - nbInsidePacket + 1, temp);
 						countPend--;
 				}
@@ -196,14 +198,14 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, int nbInsidePac
 			{
 				for (int k = 0; k < nbInsidePacket; k++)
 				{
-						int temp = pend[this->mainIncrement - k];
+						int temp = pend[increment - k];
 						this->mainVec.insert(it + 1, temp);
 						countPend--;
 				}
 
 			}
 			count--;
-			this->mainIncrement -= nbInsidePacket;
+			increment -= nbInsidePacket;
 		}
 		jacobsthalNbs.push_back(jacobsthalNbs[0] + jacobsthalNbs[0] + jacobsthalNbs[1]);
 		jacobsthalNbs.erase(jacobsthalNbs.begin());
@@ -451,6 +453,8 @@ bool		PmergeMe::fillContainers(int argc, char**argv)
 			else
 			{
 				number = strConvert<int>(str);
+				if (checkDuplicates(this->mainVec, number) == false)
+					return (false);
 				this->mainVec.push_back(number);
 				this->mainDeq.push_back(number);
 				break ;
@@ -463,6 +467,7 @@ bool		PmergeMe::fillContainers(int argc, char**argv)
 static bool	checkDuplicates(std::vector<int>& vec, int nb)
 {
 	int	size = vec.size();
+
 	for (int i = 0; i < size; i++) 
 	{
 		if (nb == vec[i])

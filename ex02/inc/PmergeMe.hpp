@@ -26,7 +26,6 @@ class	PmergeMe
 		static int nbr_of_comps;
 		std::deque<int>		mainDeq;
 		std::vector<int>	mainVec;
-		int					mainIncrement;
 
 		PmergeMe	(void);
 		PmergeMe	(int _sizeStr);
