@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 17:16:20 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/04/06 13:33:16 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/04/06 13:49:49 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,64 +21,23 @@
 
 int PmergeMe::nbr_of_comps = 0;
 
-void		printVec(std::vector<int> vec);
+void	printVec(std::vector<int> vec);
+void	printArrayVecs(std::vector<int>*& dividedVec, int sizeDividedVec);
 
-PmergeMe::PmergeMe (void)
-{
-	// std::cout << "PmergeMe Default constructeur called\n";
-}
+PmergeMe::PmergeMe (void) {}
 
-// PmergeMe::PmergeMe (const PmergeMe)
-// {
-// 	// if (this != &other)
-// 	// {
-// 	// }
-// 	// std::cout << "PmergeMe Copy constructeur called\n";
-// }
+PmergeMe::PmergeMe (const PmergeMe& other) {(void)other;}
 
-PmergeMe::PmergeMe (int)
-{
-	// std::cout << "PmergeMe Parameterized constructeur called\n";
-}
+PmergeMe& PmergeMe::operator= (const PmergeMe &other) { (void)other; return (*this); }
 
-// PmergeMe& PmergeMe::operator= (const PmergeMe &other)
-// {
-// 	// if (this != &other)
-// 	// {
-// 	// }
-// 	return (*this);
-// }
-
-PmergeMe::~PmergeMe (void)
-{
-	// std::cout << "PmergeMe Destructeur called\n";
-}
-
-void		PmergeMe::sortVec()
-{
-	std::vector<int>*	dividedVec = NULL;
-	std::vector<int>	pend;
-	std::vector<int>	remaining;
-	size_t				sizeDividedVec;
-
-	int	size = this->mainVec.size();
-
-	if (size % 2 == 0)
-		sizeDividedVec = size / 2;
-	else
-		sizeDividedVec = size / 2 + 1;
-	dividedVec= new std::vector<int>[sizeDividedVec];
-	divideAndComp(dividedVec, size, 1, sizeDividedVec);
-	fillmainVecAndPend(dividedVec, pend, remaining, sizeDividedVec, 1);
-	binaryJacobsthalNbsInsert(pend, 1);
-	delete [] dividedVec;
-}
+PmergeMe::~PmergeMe (void) {}
 
 static bool	isSorted(std::vector<int> vec);
+static bool	fillContainers(int argc, char**argv, std::vector<int>& mainVec, std::deque<int>& mainDeq);
 
 void	PmergeMe::to_sort(int argc, char **argv)
 {
-	if (fillContainers(argc, argv) == false)
+	if (fillContainers(argc, argv, this->mainVec, this->mainDeq) == false)
 	{
 		PRINT("Error: Duplicate number", RED, "\n");
 		return ;
@@ -95,9 +54,33 @@ void	PmergeMe::to_sort(int argc, char **argv)
 	this->printInformation(notSorted, time_elapsed_vec, 0);
 }
 
+void		PmergeMe::sortVec()
+{
+	std::vector<int>*	dividedVec = NULL;
+	std::vector<int>	pend;
+	std::vector<int>	remaining;
+	size_t				sizeDividedVec;
+
+	int	size = this->mainVec.size();
+
+	if (size % 2 == 0)
+		sizeDividedVec = size / 2;
+	else
+		sizeDividedVec = size / 2 + 1;
+
+	dividedVec= new std::vector<int>[sizeDividedVec];
+
+	divideAndComp(dividedVec, size, 1, sizeDividedVec);
+	fillmainVecAndPend(dividedVec, pend, remaining, sizeDividedVec, 1);
+	binaryJacobsthalNbsInsert(pend, 1);
+
+	delete [] dividedVec;
+}
+
 static void	cleanDividedVec(std::vector<int>*& dividedVec, int sizeDividedVec);
 static void	swap(std::vector<int>*& dividedVec, std::vector<int>& mainVec, int sizeDividedVec, int nbInsidePacket);
 static void	fillDividedVec(std::vector<int>*& dividedVec, std::vector<int>& mainVec, int nbInsidePacket);
+static void	fillMainVec(std::vector<int>*& dividedVec, std::vector<int>& mainVec, size_t sizeDividedVec);
 
 void		PmergeMe::divideAndComp(std::vector<int>*& dividedVec, size_t size, size_t nbInsidePacket, size_t sizeDividedVec)
 {
@@ -108,22 +91,57 @@ void		PmergeMe::divideAndComp(std::vector<int>*& dividedVec, size_t size, size_t
 		cleanDividedVec(dividedVec, sizeDividedVec);
 		fillDividedVec(dividedVec, mainVec, nbInsidePacket);
 	}
+
 	swap(dividedVec, this->mainVec, sizeDividedVec, nbInsidePacket);
-	this->fillMainVec(dividedVec, sizeDividedVec);
+
+	fillMainVec(dividedVec, this->mainVec, sizeDividedVec);
+
 	nbInsidePacket *= 2;
 	if (nbInsidePacket > size / 2)
 		return ;
+
 	divideAndComp(dividedVec, size, nbInsidePacket, sizeDividedVec);
+
 	std::vector<int> pend;
+
 	cleanDividedVec(dividedVec, sizeDividedVec);
 	fillDividedVec(dividedVec, mainVec, nbInsidePacket);
 	fillmainVecAndPend(dividedVec, pend, remaining, sizeDividedVec, nbInsidePacket);
 	binaryJacobsthalNbsInsert(pend, nbInsidePacket);	
+
 	if (remaining.empty() == true)
 		return ;
+
 	for (size_t i = 0; i < remaining.size(); i++)
 		this->mainVec.push_back(remaining[i]);
+
 	remaining.clear();
+}
+
+static void	cleanDividedVec(std::vector<int>*& dividedVec, int sizeDividedVec)
+{
+	for (int i = 0; i < sizeDividedVec; i++)
+	{
+		dividedVec[i].erase(dividedVec[i].begin(), dividedVec[i].end());
+	}
+}
+
+static void		fillDividedVec(std::vector<int>*& dividedVec, std::vector<int>& mainVec, int nbInsidePacket)
+{
+	int	j = 0;
+	int	nbAddInsidePacket = 0;
+
+	for (size_t i = 0; i < mainVec.size(); i++)
+	{
+		dividedVec[j].push_back(mainVec[i]);
+		nbAddInsidePacket++;
+		if (nbAddInsidePacket == nbInsidePacket)
+		{
+			j++;
+			nbAddInsidePacket = 0;
+		}
+	}
+	mainVec.erase(mainVec.begin(), mainVec.end());
 }
 
 static void	swap(std::vector<int>*& dividedVec, std::vector<int>& mainVec, int sizeDividedVec, int nbInsidePacket)
@@ -170,6 +188,7 @@ void	PmergeMe::fillmainVecAndPend(std::vector<int>*& dividedVec, std::vector<int
 			else
 				temp.push_back(this->mainVec[i]);
 		}
+
 		this->mainVec.clear();
 		this->mainVec = temp;
 	}
@@ -245,7 +264,9 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, int nbInsidePac
 				increment = computeIncrement(pend, nbInsidePacket, jacobsthalNbs, j);
 			if (increment < 0 || increment >= static_cast<int>(pend.size()))
 				return ;
+
 			insertion(this->mainVec, pend, copyMain, increment, nbInsidePacket, countPend);
+
 			count--;
 			increment -= nbInsidePacket;
 		}
@@ -300,12 +321,14 @@ static std::vector<int>::iterator binarySearch(std::vector<int>& v, std::vector<
 		temp = keepOnlyLastElements(v, nbInsidePacket);
 	else
 		temp = v;
+
 	std::vector<int>::iterator it_temp = temp.begin();
 	while (it_temp != temp.end() && *it_temp != *it_bound)
 	{
 		it_temp++;
 		high++;
 	}
+
     while (low < high) {
       
         int mid = ((high - low) / 2) + low;
@@ -321,6 +344,7 @@ static std::vector<int>::iterator binarySearch(std::vector<int>& v, std::vector<
 		temp_it = temp.begin() + low;
 	else
 		temp_it = temp.end();
+
 	return(std::find(v.begin(), v.end(), *temp_it));
 }
 
@@ -341,7 +365,6 @@ static int	computeIncrement(std::vector<int>& pend, size_t nbInsidePacket, std::
 	size_t	increment = 0;
 	size_t	pendSize = pend.size();
 
-	increment = 0;
 	increment = ((jacobsthalNbs[1]) * nbInsidePacket) - 1 - j;
 	if (increment >= pendSize)
 		increment = pendSize - 1;
@@ -358,38 +381,14 @@ static void	pushFirstPacket(std::vector<int>& mainVec, std::vector<int> vec, siz
 	}
 }
 
-static void		fillDividedVec(std::vector<int>*& dividedVec, std::vector<int>& mainVec, int nbInsidePacket)
-{
-	int	j = 0;
-	int	nbAddInsidePacket = 0;
 
-	for (size_t i = 0; i < mainVec.size(); i++)
-	{
-		dividedVec[j].push_back(mainVec[i]);
-		nbAddInsidePacket++;
-		if (nbAddInsidePacket == nbInsidePacket)
-		{
-			j++;
-			nbAddInsidePacket = 0;
-		}
-	}
-	mainVec.erase(mainVec.begin(), mainVec.end());
-}
 
-static void	cleanDividedVec(std::vector<int>*& dividedVec, int sizeDividedVec)
-{
-	for (int i = 0; i < sizeDividedVec; i++)
-	{
-		dividedVec[i].erase(dividedVec[i].begin(), dividedVec[i].end());
-	}
-}
-
-void		PmergeMe::fillMainVec(std::vector<int>*& dividedVec, size_t sizeDividedVec)
+static void	fillMainVec(std::vector<int>*& dividedVec, std::vector<int>& mainVec, size_t sizeDividedVec)
 {
 	for (size_t j = 0; j < sizeDividedVec; j++)
 	{
 		for (size_t i = 0; i < dividedVec[j].size(); i++)
-			this->mainVec.push_back(dividedVec[j][i]);
+			mainVec.push_back(dividedVec[j][i]);
 		dividedVec[j].erase(dividedVec[j].begin(), dividedVec[j].end());
 	}
 }
@@ -398,7 +397,7 @@ void		PmergeMe::fillMainVec(std::vector<int>*& dividedVec, size_t sizeDividedVec
 
 static bool	checkDuplicates(std::vector<int>& vec, int nb);
 
-bool		PmergeMe::fillContainers(int argc, char**argv)
+static bool		fillContainers(int argc, char**argv, std::vector<int>& mainVec, std::deque<int>& mainDeq)
 {
 	std::string	str;
 	std::string	substr;
@@ -417,19 +416,19 @@ bool		PmergeMe::fillContainers(int argc, char**argv)
 			{
 				substr = str.substr(0, pos);
 				number = strConvert<int>(substr);
-				if (checkDuplicates(this->mainVec, number) == false)
+				if (checkDuplicates(mainVec, number) == false)
 					return (false);
-				this->mainVec.push_back(number);
-				this->mainDeq.push_back(number);
+				mainVec.push_back(number);
+				mainDeq.push_back(number);
 				str.erase(0, pos + 1);
 			}
 			else
 			{
 				number = strConvert<int>(str);
-				if (checkDuplicates(this->mainVec, number) == false)
+				if (checkDuplicates(mainVec, number) == false)
 					return (false);
-				this->mainVec.push_back(number);
-				this->mainDeq.push_back(number);
+				mainVec.push_back(number);
+				mainDeq.push_back(number);
 				break ;
 			}
 		}
