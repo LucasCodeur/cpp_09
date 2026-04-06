@@ -6,7 +6,7 @@
 /*   By: lud-adam <lud-adam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 17:16:20 by lud-adam          #+#    #+#             */
-/*   Updated: 2026/04/06 12:14:26 by lud-adam         ###   ########.fr       */
+/*   Updated: 2026/04/06 12:23:36 by lud-adam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,7 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, int nbInsidePac
 			if (static_cast<size_t>(increment) >= copyMain.size())
 				it_bound = this->mainVec.end() - 1;
 			else
-				it_bound  = std::find(this->mainVec.begin(), this->mainVec.end(), copyMain[increment]);
+				it_bound  = std::find(this->mainVec.begin(), this->mainVec.end(), copyMain[increment]) - nbInsidePacket;
 			std::vector<int>::iterator it;
 
 			it = binarySearch(this->mainVec, it_bound , pend[increment], nbInsidePacket);
@@ -240,8 +240,9 @@ std::vector<int>::iterator binarySearch(std::vector<int>& v, std::vector<int>::i
 	int high = 0;
 	int	low = 0;
 	std::vector<int> temp;
+
 	if (nbInsidePacket != 1)
-		 temp = keepOnlyLastElements(v, nbInsidePacket);
+		temp = keepOnlyLastElements(v, nbInsidePacket);
 	else
 		temp = v;
 	std::vector<int>::iterator it_temp = temp.begin();
@@ -257,6 +258,7 @@ std::vector<int>::iterator binarySearch(std::vector<int>& v, std::vector<int>::i
             low = mid + 1;
         else
 			high = mid;
+		PmergeMe::nbr_of_comps++;
     }
   	
 	std::vector<int>::iterator temp_it;
