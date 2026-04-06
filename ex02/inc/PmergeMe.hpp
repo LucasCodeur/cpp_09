@@ -26,8 +26,6 @@ class	PmergeMe
 		static int nbr_of_comps;
 		std::deque<int>		mainDeq;
 		std::vector<int>	mainVec;
-		std::vector<int>*	dividedVec;
-		int					originalSizeDividedVec;
 		int					mainIncrement;
 		int					countPend;
 
@@ -38,7 +36,7 @@ class	PmergeMe
 		PmergeMe&	operator= ( const PmergeMe &);
 		void		fordJonhson(void);
 		void		printVec(std::vector<int> vec);
-		void		cleanDividedVec(std::vector<int>*& dividedVec);
+		void		cleanDividedVec(std::vector<int>*& dividedVec, int sizeDividedVec);
 		void		divideAndComp(std::vector<int>*& dividedVec, size_t size, size_t nbInsidePacket, size_t sizeDividedVec);
 		void		fillDividedVec(std::vector<int>*& dividedVec, int nbInsidePacket);
 		void		fillMainVec(std::vector<int>*& dividedVec, size_t sizeDividedVec);
@@ -49,7 +47,7 @@ class	PmergeMe
 		void		swap(std::vector<int>*& dividedVec, int sizeDividedVec, int nbInsidePacket);
 		void		fillPend(std::vector<int>* pend, size_t sizeDividedVec, size_t nbInsidePacket);
 		void		resizeDividedArrayVec();
-		void		printArrayVecs(int sizeDividedVec);
+		void		printArrayVecs(std::vector<int>*& dividedVec, int sizeDividedVec);
 		void		to_sort(int argc, char **argv);
 		void		sortVec();
 		std::vector<int>::iterator searchNumber(std::vector<int>::iterator it_bound, int value);
