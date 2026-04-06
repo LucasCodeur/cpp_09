@@ -54,6 +54,7 @@ PmergeMe::~PmergeMe (void)
 
 void		PmergeMe::sortVec()
 {
+	std::vector<int> remaining;
 	size_t	sizeDividedVec;
 
 	int	size = this->mainVec.size();
@@ -68,7 +69,7 @@ void		PmergeMe::sortVec()
 	divideAndComp(dividedVec, size, 1, sizeDividedVec);
 
 	std::vector<int> pend;
-	fillmainVecAndPend(dividedVec, pend, sizeDividedVec, 1);
+	fillmainVecAndPend(dividedVec, pend, remaining, sizeDividedVec, 1);
 
 	std::vector<int> jacobsthalNbs;
 	jacobsthalNbs.push_back(1);
@@ -131,6 +132,7 @@ void	PmergeMe::to_sort(int argc, char **argv)
 
 void		PmergeMe::divideAndComp(std::vector<int>*& dividedVec, size_t size, size_t nbInsidePacket, size_t sizeDividedVec)
 {
+	std::vector<int> remaining;
 	if (nbInsidePacket > 1)
 	{
 		this->cleanDividedVec(dividedVec);
@@ -148,7 +150,7 @@ void		PmergeMe::divideAndComp(std::vector<int>*& dividedVec, size_t size, size_t
 	jacobsthalNbs.push_back(3);
 	this->cleanDividedVec(dividedVec);
 	this->fillDividedVec(dividedVec, nbInsidePacket);
-	fillmainVecAndPend(dividedVec, pend, sizeDividedVec, nbInsidePacket);
+	fillmainVecAndPend(dividedVec, pend, remaining, sizeDividedVec, nbInsidePacket);
 	std::vector<int> copyMain = this->mainVec;
 	while (this->countPend > 0)
 	{
@@ -159,7 +161,7 @@ void		PmergeMe::divideAndComp(std::vector<int>*& dividedVec, size_t size, size_t
 	}
 	if (remaining.empty() == true)
 		return ;
-	for (size_t i = 0; i < this->remaining.size(); i++)
+	for (size_t i = 0; i < remaining.size(); i++)
 	{
 		this->mainVec.push_back(remaining[i]);
 	}
@@ -298,7 +300,7 @@ std::vector<int>::iterator binarySearch(std::vector<int>& v, std::vector<int>::i
 	return(std::find(v.begin(), v.end(), *temp_it));
 }
 
-void	PmergeMe::fillmainVecAndPend(std::vector<int>*& dividedVec, std::vector<int>& pend, size_t sizeDividedVec, size_t nbInsidePacket)
+void	PmergeMe::fillmainVecAndPend(std::vector<int>*& dividedVec, std::vector<int>& pend, std::vector<int>& remaining, size_t sizeDividedVec, size_t nbInsidePacket)
 {
 	if (nbInsidePacket == 1)
 	{
@@ -331,7 +333,7 @@ void	PmergeMe::fillmainVecAndPend(std::vector<int>*& dividedVec, std::vector<int
 			else
 			{
 				for (size_t k = 0; k < dividedVec[j].size(); k++)
-					this->remaining.push_back(dividedVec[j][k]);
+					remaining.push_back(dividedVec[j][k]);
 			}
 		}
 		else
@@ -344,7 +346,7 @@ void	PmergeMe::fillmainVecAndPend(std::vector<int>*& dividedVec, std::vector<int
 			else
 			{
 				for (size_t k = 0; k < dividedVec[j].size(); k++)
-					this->remaining.push_back(dividedVec[j][k]);
+					remaining.push_back(dividedVec[j][k]);
 			}
 		}
 	}

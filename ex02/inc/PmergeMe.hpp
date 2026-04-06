@@ -26,7 +26,6 @@ class	PmergeMe
 		static int nbr_of_comps;
 		std::deque<int>		mainDeq;
 		std::vector<int>	mainVec;
-		std::vector<int>	remaining;
 		std::vector<int>*	dividedVec;
 		int					originalSizeDividedVec;
 		int					mainIncrement;
@@ -43,7 +42,7 @@ class	PmergeMe
 		void		divideAndComp(std::vector<int>*& dividedVec, size_t size, size_t nbInsidePacket, size_t sizeDividedVec);
 		void		fillDividedVec(std::vector<int>*& dividedVec, int nbInsidePacket);
 		void		fillMainVec(std::vector<int>*& dividedVec, size_t sizeDividedVec);
-		void		fillmainVecAndPend(std::vector<int>*& dividedVec, std::vector<int>& pend, size_t sizeDividedVec, size_t nbInsidePacket);
+		void		fillmainVecAndPend(std::vector<int>*& dividedVec, std::vector<int>& pend, std::vector<int>& remaining,  size_t sizeDividedVec, size_t nbInsidePacket);
 		int			computeIncrement(std::vector<int>& pend, size_t nbInsidePacket, std::vector<int>& jacobsthalNumber, int j);
 		void		binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int> copyMain, std::vector<int> jacobsthalNumber, int nbInsidePacket);
 		void		pushFirstPacket(std::vector<int> vec, int nbInsidePacket);
