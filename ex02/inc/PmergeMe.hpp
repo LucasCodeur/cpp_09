@@ -39,12 +39,12 @@ class	PmergeMe
 		PmergeMe&	operator= ( const PmergeMe &);
 		void		fordJonhson(void);
 		void		printVec(std::vector<int> vec);
-		void		cleanDividedVec(int sizeDividedVec);
+		void		cleanDividedVec(void);
 		void		divideAndComp(size_t size, size_t nbInsidePacket, size_t sizeDividedVec);
-		void		fillDividedVec(int size, int nbInsidePacket, size_t* sizeDividedVec);
+		void		fillDividedVec(int nbInsidePacket);
 		void		fillMainVec(size_t sizeDividedVec);
 		void		fillmainVecAndPend(std::vector<int>& pend, size_t sizeDividedVec, size_t nbInsidePacket);
-		int			computeIncrement(std::vector<int>& pend, size_t nbInsidePacket, std::vector<int>& jacobsthalNumber, int j, int& count);
+		int			computeIncrement(std::vector<int>& pend, size_t nbInsidePacket, std::vector<int>& jacobsthalNumber, int j);
 		void		binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int> copyMain, std::vector<int> jacobsthalNumber, int nbInsidePacket);
 		void		pushFirstPacket(std::vector<int> vec, int nbInsidePacket);
 		void		swap(int sizeDividedVec, int nbInsidePacket);

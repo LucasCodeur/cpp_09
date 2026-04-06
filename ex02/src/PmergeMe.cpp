@@ -52,10 +52,6 @@ PmergeMe::~PmergeMe (void)
 	// std::cout << "PmergeMe Destructeur called\n";
 }
 
-void debug_vec(const std::vector<int>& v);
-
-static void		divideAndComp();
-
 void		PmergeMe::sortVec()
 {
 	size_t	sizeDividedVec;
@@ -137,8 +133,8 @@ void		PmergeMe::divideAndComp(size_t size, size_t nbInsidePacket, size_t sizeDiv
 {
 	if (nbInsidePacket > 1)
 	{
-		this->cleanDividedVec(sizeDividedVec);
-		this->fillDividedVec(size, nbInsidePacket, &sizeDividedVec);
+		this->cleanDividedVec();
+		this->fillDividedVec(nbInsidePacket);
 	}
 	this->swap(sizeDividedVec, nbInsidePacket);
 	this->fillMainVec(sizeDividedVec);
@@ -150,8 +146,8 @@ void		PmergeMe::divideAndComp(size_t size, size_t nbInsidePacket, size_t sizeDiv
 	std::vector<int> jacobsthalNbs;
 	jacobsthalNbs.push_back(1);
 	jacobsthalNbs.push_back(3);
-	this->cleanDividedVec(sizeDividedVec);
-	this->fillDividedVec(size, nbInsidePacket, &sizeDividedVec);
+	this->cleanDividedVec();
+	this->fillDividedVec(nbInsidePacket);
 	fillmainVecAndPend(pend, sizeDividedVec, nbInsidePacket);
 	std::vector<int> copyMain = this->mainVec;
 	while (this->countPend > 0)
@@ -170,7 +166,7 @@ void		PmergeMe::divideAndComp(size_t size, size_t nbInsidePacket, size_t sizeDiv
 	remaining.clear();
 }
 
-int	PmergeMe::computeIncrement(std::vector<int>& pend, size_t nbInsidePacket, std::vector<int>& jacobsthalNumber, int j, int& count)
+int	PmergeMe::computeIncrement(std::vector<int>& pend, size_t nbInsidePacket, std::vector<int>& jacobsthalNumber, int j)
 {
 	size_t	increment = 0;
 
@@ -209,7 +205,7 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 
 		int increment = 0;
 		if (this->mainIncrement == 0)
-			increment = computeIncrement(pend, nbInsidePacket, jacobsthalNumber, j, count);
+			increment = computeIncrement(pend, nbInsidePacket, jacobsthalNumber, j);
 		if (increment < 0 || increment >= static_cast<int>(pend.size()))
 			return ;
 		int	temp = pend[this->mainIncrement];
@@ -218,7 +214,6 @@ void	PmergeMe::binaryJacobsthalNbsInsert(std::vector<int>& pend, std::vector<int
 			it_bound = this->mainVec.end() - 1;
 		else
 			it_bound  = std::find(this->mainVec.begin(), this->mainVec.end(), copyMain[this->mainIncrement]);
-		int high = 0;
 		std::vector<int>::iterator it;
 		it = binarySearch(this->mainVec, it_bound , pend[this->mainIncrement], nbInsidePacket);
 		if (*it > temp)
@@ -356,7 +351,7 @@ void	PmergeMe::fillmainVecAndPend(std::vector<int>& pend, size_t sizeDividedVec,
 	this->countPend = pend.size();
 }
 
-void		PmergeMe::fillDividedVec(int size, int nbInsidePacket, size_t* sizeDividedVec)
+void		PmergeMe::fillDividedVec(int nbInsidePacket)
 {
 	int	j = 0;
 	int	nbAddInsidePacket = 0;
@@ -374,7 +369,7 @@ void		PmergeMe::fillDividedVec(int size, int nbInsidePacket, size_t* sizeDivided
 	mainVec.erase(mainVec.begin(), mainVec.end());
 }
 
-void	PmergeMe::cleanDividedVec(int sizeDividedVec)
+void	PmergeMe::cleanDividedVec()
 {
 	for (int i = 0; i < this->originalSizeDividedVec; i++)
 	{
