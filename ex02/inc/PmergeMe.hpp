@@ -32,10 +32,17 @@ class	PmergeMe
 		PmergeMe&	operator= (const PmergeMe &other);
 
 		void		to_sort(int argc, char **argv);
+
 		void		sortVec();
 		void		divideAndComp(std::vector<int>*& dividedVec, size_t size, size_t nbInsidePacket, size_t sizeDividedVec);
 		void		fillmainVecAndPend(std::vector<int>*& dividedVec, std::vector<int>& pend, std::vector<int>& remaining,  size_t sizeDividedVec, size_t nbInsidePacket);
 		void		binaryJacobsthalNbsInsert(std::vector<int>& pend, int nbInsidePacket);
+
+		void		sortDeq();
+		void		divideAndCompDeq(std::deque<int>*& dividedVec, size_t size, size_t nbInsidePacket, size_t sizeDividedVec);
+		void		fillmainDeqAndPend(std::deque<int>*& dividedDeq, std::deque<int>& pend, std::deque<int>& remaining,  size_t sizeDividedDeq, size_t nbInsidePacket);
+		void		binaryJacobsthalNbsInsertDeq(std::deque<int>& pend, int nbInsidePacket);
+
 		void		printInformation(std::vector<int> notSorted, double time_elapsed_vec, double time_elapsed_deq);
 
 	private:
