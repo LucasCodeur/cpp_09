@@ -38,10 +38,7 @@ static bool	fillContainers(int argc, char**argv, std::vector<int>& mainVec, std:
 void	PmergeMe::to_sort(int argc, char **argv)
 {
 	if (fillContainers(argc, argv, this->mainVec, this->mainDeq) == false)
-	{
-		PRINT("Error: Duplicate number", RED, "\n");
 		return ;
-	}
 	std::vector<int>	notSorted = this->mainVec;
 
 	clock_t start_vec = clock();
@@ -68,7 +65,7 @@ void		PmergeMe::sortVec()
 	else
 		sizeDividedVec = size / 2 + 1;
 
-	dividedVec= new std::vector<int>[sizeDividedVec];
+	dividedVec = new std::vector<int>[sizeDividedVec];
 
 	divideAndComp(dividedVec, size, 1, sizeDividedVec);
 	fillmainVecAndPend(dividedVec, pend, remaining, sizeDividedVec, 1);
@@ -84,8 +81,6 @@ static void	fillMainVec(std::vector<int>*& dividedVec, std::vector<int>& mainVec
 
 void		PmergeMe::divideAndComp(std::vector<int>*& dividedVec, size_t size, size_t nbInsidePacket, size_t sizeDividedVec)
 {
-	std::vector<int> remaining;
-
 	if (nbInsidePacket > 1)
 	{
 		cleanDividedVec(dividedVec, sizeDividedVec);
@@ -94,7 +89,8 @@ void		PmergeMe::divideAndComp(std::vector<int>*& dividedVec, size_t size, size_t
 
 	swap(dividedVec, this->mainVec, sizeDividedVec, nbInsidePacket);
 
-	fillMainVec(dividedVec, this->mainVec, sizeDividedVec);
+	if (nbInsidePacket > 1)
+		fillMainVec(dividedVec, this->mainVec, sizeDividedVec);
 
 	nbInsidePacket *= 2;
 	if (nbInsidePacket > size / 2)
@@ -103,6 +99,7 @@ void		PmergeMe::divideAndComp(std::vector<int>*& dividedVec, size_t size, size_t
 	divideAndComp(dividedVec, size, nbInsidePacket, sizeDividedVec);
 
 	std::vector<int> pend;
+	std::vector<int> remaining;
 
 	cleanDividedVec(dividedVec, sizeDividedVec);
 	fillDividedVec(dividedVec, mainVec, nbInsidePacket);
@@ -416,8 +413,16 @@ static bool		fillContainers(int argc, char**argv, std::vector<int>& mainVec, std
 			{
 				substr = str.substr(0, pos);
 				number = strConvert<int>(substr);
-				if (checkDuplicates(mainVec, number) == false)
+				if (number < 0)
+				{
+					PRINT("Error: negative number", RED, "\n");
 					return (false);
+				}
+				if (checkDuplicates(mainVec, number) == false)
+				{
+					PRINT("Error: Duplicate number", RED, "\n");
+					return (false);
+				}
 				mainVec.push_back(number);
 				mainDeq.push_back(number);
 				str.erase(0, pos + 1);
@@ -425,8 +430,16 @@ static bool		fillContainers(int argc, char**argv, std::vector<int>& mainVec, std
 			else
 			{
 				number = strConvert<int>(str);
-				if (checkDuplicates(mainVec, number) == false)
+				if (number < 0)
+				{
+					PRINT("Error: negative number", RED, "\n");
 					return (false);
+				}
+				if (checkDuplicates(mainVec, number) == false)
+				{
+					PRINT("Error: Duplicate number", RED, "\n");
+					return (false);
+				}
 				mainVec.push_back(number);
 				mainDeq.push_back(number);
 				break ;
