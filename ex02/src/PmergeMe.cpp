@@ -42,9 +42,13 @@ void	PmergeMe::to_sort(int argc, char **argv)
 	if (isSorted(this->mainVec) == false)
 	{
 		clock_t start_vec = clock();
+		PRINT("To sort: mainvec", RED, "\n");
+		printVec(this->mainVec);
 		this->sortVec();
 		clock_t end_vec = clock();
 		clock_t start_deq = clock();
+		PRINT("To sort: maindeq", RED, "\n");
+		printDeq(this->mainDeq);
 		this->sortDeq();
 		clock_t end_deq = clock();
 
@@ -75,6 +79,9 @@ void		PmergeMe::sortVec()
 	fillmainVecAndPend(dividedVec, pend, remaining, sizeDividedDeq, 1);
 	binaryJacobsthalNbsInsert(pend, 1);
 
+	PRINT("DividedAndComp: End Vec", YELLOW, "\n");
+	printVec(this->mainVec);
+
 	delete [] dividedVec;
 }
 
@@ -96,6 +103,7 @@ void		PmergeMe::divideAndComp(std::vector<int>*& dividedVec, size_t size, size_t
 	if (nbInsidePacket > 1)
 		fillMainVec(dividedVec, this->mainVec, sizeDividedDeq);
 
+	printVec(this->mainVec);
 	nbInsidePacket *= 2;
 	if (nbInsidePacket > size / 2)
 		return ;
@@ -117,6 +125,8 @@ void		PmergeMe::divideAndComp(std::vector<int>*& dividedVec, size_t size, size_t
 		this->mainVec.push_back(remaining[i]);
 
 	remaining.clear();
+	PRINT("DividedAndComp: End Vec", YELLOW, "\n");
+	printVec(this->mainVec);
 }
 
 static void	cleanDividedVec(std::vector<int>*& dividedVec, int sizeDividedDeq)
@@ -413,6 +423,9 @@ void		PmergeMe::sortDeq()
 	fillmainDeqAndPend(dividedDeq, pend, remaining, sizeDividedDeq, 1);
 	binaryJacobsthalNbsInsertDeq(pend, 1);
 
+	PRINT("DividedAndComp: End: Deq", YELLOW, "\n");
+	printDeq(this->mainDeq);
+
 	delete [] dividedDeq;
 }
 
@@ -426,14 +439,14 @@ void		PmergeMe::divideAndCompDeq(std::deque<int>*& dividedDeq, size_t size, size
 	if (nbInsidePacket > 1)
 	{
 		cleanDividedDeq(dividedDeq, sizeDividedDeq);
-		fillDividedDeq(dividedDeq, mainDeq, nbInsidePacket);
+		fillDividedDeq(dividedDeq, this->mainDeq, nbInsidePacket);
 	}
 
 	swap(dividedDeq, this->mainDeq, sizeDividedDeq, nbInsidePacket);
-
 	if (nbInsidePacket > 1)
 		fillMainDeq(dividedDeq, this->mainDeq, sizeDividedDeq);
 
+	printDeq(this->mainDeq);
 	nbInsidePacket *= 2;
 	if (nbInsidePacket > size / 2)
 		return ;
@@ -455,14 +468,15 @@ void		PmergeMe::divideAndCompDeq(std::deque<int>*& dividedDeq, size_t size, size
 		this->mainDeq.push_back(remaining[i]);
 
 	remaining.clear();
+
+	PRINT("DividedAndComp: End: Deq", YELLOW, "\n");
+	printDeq(this->mainDeq);
 }
 
 static void	cleanDividedDeq(std::deque<int>*& dividedDeq, int sizeDividedDeq)
 {
 	for (int i = 0; i < sizeDividedDeq; i++)
-	{
 		dividedDeq[i].erase(dividedDeq[i].begin(), dividedDeq[i].end());
-	}
 }
 
 static void		fillDividedDeq(std::deque<int>*& dividedDeq, std::deque<int>& mainDeq, int nbInsidePacket)
@@ -527,7 +541,6 @@ void	PmergeMe::fillmainDeqAndPend(std::deque<int>*& dividedDeq, std::deque<int>&
 			else
 				temp.push_back(this->mainDeq[i]);
 		}
-
 		this->mainDeq.clear();
 		this->mainDeq = temp;
 	}
@@ -648,17 +661,17 @@ static void	insertion(std::deque<int>& mainDeq, std::deque<int>& pend, std::dequ
 	}
 }
 
-static std::deque<int> keepOnlyLastElements(std::deque<int>& v, int nbInsidePackets);
-static std::deque<int>::iterator binarySearch(std::deque<int>& v, std::deque<int>::iterator it_bound, int target, int nbInsidePacket)
+static std::deque<int> keepOnlyLastElements(std::deque<int>& d, int nbInsidePackets);
+static std::deque<int>::iterator binarySearch(std::deque<int>& d, std::deque<int>::iterator it_bound, int target, int nbInsidePacket)
 {
 	int high = 0;
 	int	low = 0;
 	std::deque<int> temp;
 
 	if (nbInsidePacket != 1)
-		temp = keepOnlyLastElements(v, nbInsidePacket);
+		temp = keepOnlyLastElements(d, nbInsidePacket);
 	else
-		temp = v;
+		temp = d;
 
 	std::deque<int>::iterator it_temp = temp.begin();
 	while (it_temp != temp.end() && *it_temp != *it_bound)
@@ -682,17 +695,17 @@ static std::deque<int>::iterator binarySearch(std::deque<int>& v, std::deque<int
 	else
 		temp_it = temp.end();
 
-	return(std::find(v.begin(), v.end(), *temp_it));
+	return(std::find(d.begin(), d.end(), *temp_it));
 }
 
-static std::deque<int> keepOnlyLastElements(std::deque<int>& v, int nbInsidePackets)
+static std::deque<int> keepOnlyLastElements(std::deque<int>& d, int nbInsidePackets)
 {
     std::deque<int> res;
 
-    for (size_t i = nbInsidePackets - 1; i < v.size(); i++)
+    for (size_t i = nbInsidePackets - 1; i < d.size(); i++)
     {
        if ((i + 1) % (nbInsidePackets) == 0) 
-            res.push_back(v[i]);
+            res.push_back(d[i]);
     }
     return (res);
 }
@@ -709,11 +722,11 @@ static int	computeIncrement(std::deque<int>& pend, size_t nbInsidePacket, std::d
 }
 
 
-static void	pushFirstPacket(std::deque<int>& mainDeq, std::deque<int> vec, size_t& countPend,  int nbInsidePacket)
+static void	pushFirstPacket(std::deque<int>& mainDeq, std::deque<int> deq, size_t& countPend,  int nbInsidePacket)
 {
 	for (int i = nbInsidePacket; i > 0; i--)
 	{
-		mainDeq.insert(mainDeq.begin(), vec[i - 1]);
+		mainDeq.insert(mainDeq.begin(), deq[i - 1]);
 		countPend--;
 	}
 }
