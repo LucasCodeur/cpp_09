@@ -771,12 +771,12 @@ static bool	checkError(std::vector<int>& mainVec, int number)
 {
 	if (number < 0)
 	{
-		PRINT("Error: negative number", RED, "\n");
+		std::cerr << "Error: negative number" << std::endl;
 		return (false);
 	}
 	if (checkDuplicates(mainVec, number) == false)
 	{
-		PRINT("Error: Duplicate number", RED, "\n");
+		std::cerr << "Error: duplicate number" << std::endl;
 		return (false);
 	}
 	return (true);
@@ -841,8 +841,6 @@ void	PmergeMe::printInformation(std::vector<int> notSorted, double time_elapsed_
 	printVec(notSorted);
 	PRINT("After Vector: ", GREEN, "")
 	printVec(this->mainVec);
-	PRINT("After Deque: ", GREEN, "")
-	printDeq(this->mainDeq);
 	std::cout << "Time to process a range of " << this->mainVec.size()
 			  << " elements with std::vector: " << std::fixed << std::setprecision(6)
 			  << time_elapsed_vec << "s\n";

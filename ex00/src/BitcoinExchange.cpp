@@ -92,7 +92,6 @@ void	BitcoinExchange::convert(const char* inputFile)
 		std::map<std::string, double>::iterator it = this->_database.lower_bound(strDate);
 		if (it != this->_database.begin() && strDate != it->first)
 			--it;
-		std::cout << "iterator first:" <<  it->first <<  "iterator second: " << it->second << std::endl;
 		double number = strConvert<double>(strNumber); 
 		if (number > 1000)
 		{
