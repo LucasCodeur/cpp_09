@@ -42,13 +42,9 @@ void	PmergeMe::to_sort(int argc, char **argv)
 	if (isSorted(this->mainVec) == false)
 	{
 		clock_t start_vec = clock();
-		PRINT("To sort: mainvec", RED, "\n");
-		printVec(this->mainVec);
 		this->sortVec();
 		clock_t end_vec = clock();
 		clock_t start_deq = clock();
-		PRINT("To sort: maindeq", RED, "\n");
-		printDeq(this->mainDeq);
 		this->sortDeq();
 		clock_t end_deq = clock();
 
@@ -79,9 +75,6 @@ void		PmergeMe::sortVec()
 	fillmainVecAndPend(dividedVec, pend, remaining, sizeDividedDeq, 1);
 	binaryJacobsthalNbsInsert(pend, 1);
 
-	PRINT("DividedAndComp: End Vec", YELLOW, "\n");
-	printVec(this->mainVec);
-
 	delete [] dividedVec;
 }
 
@@ -103,7 +96,6 @@ void		PmergeMe::divideAndComp(std::vector<int>*& dividedVec, size_t size, size_t
 	if (nbInsidePacket > 1)
 		fillMainVec(dividedVec, this->mainVec, sizeDividedDeq);
 
-	printVec(this->mainVec);
 	nbInsidePacket *= 2;
 	if (nbInsidePacket > size / 2)
 		return ;
@@ -125,16 +117,12 @@ void		PmergeMe::divideAndComp(std::vector<int>*& dividedVec, size_t size, size_t
 		this->mainVec.push_back(remaining[i]);
 
 	remaining.clear();
-	PRINT("DividedAndComp: End Vec", YELLOW, "\n");
-	printVec(this->mainVec);
 }
 
 static void	cleanDividedVec(std::vector<int>*& dividedVec, int sizeDividedDeq)
 {
 	for (int i = 0; i < sizeDividedDeq; i++)
-	{
 		dividedVec[i].erase(dividedVec[i].begin(), dividedVec[i].end());
-	}
 }
 
 static void		fillDividedVec(std::vector<int>*& dividedVec, std::vector<int>& mainVec, int nbInsidePacket)
@@ -318,7 +306,6 @@ static void	insertion(std::vector<int>& mainVec, std::vector<int>& pend, std::ve
 				mainVec.insert(it + 1, temp);
 				countPend--;
 		}
-
 	}
 }
 
@@ -423,9 +410,6 @@ void		PmergeMe::sortDeq()
 	fillmainDeqAndPend(dividedDeq, pend, remaining, sizeDividedDeq, 1);
 	binaryJacobsthalNbsInsertDeq(pend, 1);
 
-	PRINT("DividedAndComp: End: Deq", YELLOW, "\n");
-	printDeq(this->mainDeq);
-
 	delete [] dividedDeq;
 }
 
@@ -446,7 +430,6 @@ void		PmergeMe::divideAndCompDeq(std::deque<int>*& dividedDeq, size_t size, size
 	if (nbInsidePacket > 1)
 		fillMainDeq(dividedDeq, this->mainDeq, sizeDividedDeq);
 
-	printDeq(this->mainDeq);
 	nbInsidePacket *= 2;
 	if (nbInsidePacket > size / 2)
 		return ;
@@ -468,9 +451,6 @@ void		PmergeMe::divideAndCompDeq(std::deque<int>*& dividedDeq, size_t size, size
 		this->mainDeq.push_back(remaining[i]);
 
 	remaining.clear();
-
-	PRINT("DividedAndComp: End: Deq", YELLOW, "\n");
-	printDeq(this->mainDeq);
 }
 
 static void	cleanDividedDeq(std::deque<int>*& dividedDeq, int sizeDividedDeq)
@@ -639,13 +619,16 @@ static void	insertion(std::deque<int>& mainDeq, std::deque<int>& pend, std::dequ
 		it_bound  = std::find(mainDeq.begin(), mainDeq.end(), copyMain[increment]) - nbInsidePacket;
 
 	std::deque<int>::iterator it;
+
 	it = binarySearch(mainDeq, it_bound , pend[increment], nbInsidePacket);
+	size_t	it_index = it - mainDeq.begin();
 	if (*it > temp)
 	{
 		for (int k = 0; k < nbInsidePacket; k++)
 		{
 				int temp = pend[increment - k];
-				mainDeq.insert(it - nbInsidePacket + 1, temp);
+				it = mainDeq.begin() + (it_index - nbInsidePacket + 1);
+				mainDeq.insert(it, temp);
 				countPend--;
 		}
 	}
@@ -654,10 +637,9 @@ static void	insertion(std::deque<int>& mainDeq, std::deque<int>& pend, std::dequ
 		for (int k = 0; k < nbInsidePacket; k++)
 		{
 				int temp = pend[increment - k];
-				mainDeq.insert(it + 1, temp);
+				mainDeq.insert(mainDeq.begin() + (it_index + 1), temp);
 				countPend--;
 		}
-
 	}
 }
 
