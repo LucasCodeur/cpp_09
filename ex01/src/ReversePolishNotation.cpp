@@ -56,7 +56,7 @@ bool ReversePolishNotation::parsing(std::string polishExpression)
 	std::string	errorMessage = "Error";
 
 	if (polishExpression.empty() == true)
-		throw std::runtime_error("Error");
+		throw std::runtime_error(errorMessage);
 	this->_sizeStr = polishExpression.length();
 	for (int i = 0; i < this->_sizeStr; i++)
 	{

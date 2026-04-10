@@ -130,9 +130,7 @@ static int	checkLeapYear(int year)
 	else if (year % 100 == 0)
 		return (28);
 	else if (year % 4 == 0)
-	{
 		return (29);
-	}
 	return (28);
 }
 
@@ -176,7 +174,7 @@ void	BitcoinExchange::checkHeader(std::string header, const char c, const std::s
 
 bool	BitcoinExchange::detectMultipleCharacters(const std::string& str, const char c)
 {
-	short int nb_dots= 0;
+	short int nb_dots = 0;
 
 	for (int i = 0; str[i]; i++)
 	{
