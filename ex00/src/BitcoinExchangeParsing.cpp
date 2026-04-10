@@ -43,9 +43,9 @@ bool	BitcoinExchange::parsing(std::string& strDate, std::string& strNumber, bool
 	}
 	else if (isGoodFormatNumber(strNumber) == false)
 	{
-		message = "Error : number format isn't correct: ";
+		message = "Error: number format isn't correct: ";
 		message += strNumber;
-		if (noThrow)
+		if (noThrow == false)
 			throw std::runtime_error(message);
 		else
 			std::cout << message << std::endl;
