@@ -25,7 +25,7 @@ class	ReversePolishNotation
 {
 	public:
 		ReversePolishNotation	(void);
-		ReversePolishNotation (int _sizeStr);
+		ReversePolishNotation	(int _sizeStr);
 		ReversePolishNotation	(const ReversePolishNotation &);
 		~ReversePolishNotation	(void);
 		ReversePolishNotation& operator= ( const ReversePolishNotation &);

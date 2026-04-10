@@ -11,8 +11,10 @@
 /* ************************************************************************** */
 
 #include "ReversePolishNotation.hpp"
+
 #include <cctype>
 #include <stdexcept>
+#include <limits>
 
 ReversePolishNotation::ReversePolishNotation (void)
 {
@@ -66,6 +68,8 @@ bool ReversePolishNotation::parsing(std::string polishExpression)
 			operators++;
 		else if (!isdigit(polishExpression[i]))
 			throw std::runtime_error(errorMessage);
+		else if (isdigit(polishExpression[i]) && i < this->_sizeStr - 1 && !std::isspace(polishExpression[i + 1]))
+			throw std::runtime_error(errorMessage);
 		else
 			operands++;
 		if (operators >= operands)
@@ -85,14 +89,14 @@ static bool	detectOperators(char& op)
 	return (false);
 }
 
-static float	computeExpr(float operand_1, float operand_2, char& op);
+static 	long long computeExpr(long operand_1,  long operand_2, char& op);
 
 bool ReversePolishNotation::rpn(std::string polishExpression)
 {
-	std::stack<float>	_stack;
-	float				operand_1 = 0;
-	float				operand_2 = 0;
-	float				ret = 0;
+	std::stack<int>	_stack;
+	int						operand_1 = 0;
+	int						operand_2 = 0;
+	long long				ret = 0;
 
 	for (int i = 0; i < this->_sizeStr; i++)
 	{
@@ -105,18 +109,20 @@ bool ReversePolishNotation::rpn(std::string polishExpression)
 			operand_2 = _stack.top();
 			_stack.pop();
 			ret = computeExpr(operand_1, operand_2, polishExpression[i]);
+			if (ret > std::numeric_limits<int>::max() || ret < std::numeric_limits<int>::min())
+				throw::std::runtime_error("Error: Overflow");
 			_stack.push(ret);
 		}
 		else
-			_stack.push(strConvert<float>(polishExpression[i]));
+			_stack.push(strConvert<int>(polishExpression[i]));
 	}
 	std::cout << ret << std::endl;
 	return (true);
 }
 
-static float	computeExpr(float operand_1, float operand_2, char& op)
+static long long	computeExpr(long operand_1,  long operand_2, char& op)
 {
-	float		ret = 0;
+	long long		ret = 0;
 
 	if (op == '+')
 		ret = operand_2 + operand_1;
@@ -125,6 +131,11 @@ static float	computeExpr(float operand_1, float operand_2, char& op)
 	else if (op == '*')
 		ret = operand_2 * operand_1;
 	else if (op == '/')
-		ret = operand_2 / operand_1;
+	{
+		if (operand_1 == 0 || operand_2 == 0)
+				throw::std::runtime_error("Error: division by 0");
+		else
+			ret = operand_2 / operand_1;
+	}
 	return (ret);
 }
