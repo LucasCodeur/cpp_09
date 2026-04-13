@@ -20,7 +20,7 @@
 #include <vector>
 
 static void	printVec(std::vector<int> vec);
-static void	printDeq(std::deque<int> deq);
+// static void	printDeq(std::deque<int> deq);
 
 PmergeMe::PmergeMe (void) {}
 
@@ -53,6 +53,8 @@ void	PmergeMe::to_sort(int argc, char **argv)
 
 		this->printInformation(notSorted, time_elapsed_vec, time_elapsed_deq);
 	}
+	else
+		PRINT("Already sorted", GREEN, "\n");
 }
 
 void		PmergeMe::sortVec()
@@ -821,17 +823,17 @@ static void	printVec(std::vector<int> vec)
 	std::cout << std::endl;
 }
 
-static void	printDeq(std::deque<int> deq)
-{
-	if (deq.size() != 0)
-	{
-		for (size_t i = 0; i < deq.size(); i++)
-		{
-			std::cout << deq[i] << " ";
-		}
-	}
-	std::cout << std::endl;
-}
+// static void	printDeq(std::deque<int> deq)
+// {
+// 	if (deq.size() != 0)
+// 	{
+// 		for (size_t i = 0; i < deq.size(); i++)
+// 		{
+// 			std::cout << deq[i] << " ";
+// 		}
+// 	}
+// 	std::cout << std::endl;
+// }
 
 void	PmergeMe::printInformation(std::vector<int> notSorted, double time_elapsed_vec, double time_elapsed_deq)
 {

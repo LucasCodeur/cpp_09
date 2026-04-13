@@ -110,7 +110,7 @@ static bool	checkFormatDate(struct tm tm, std::string& strDate, bool noThrow)
 	int				feb = checkLeapYear(tm.tm_year);
 	int				dayAccordingMonths[13] = {0, 31, feb, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-	if (tm.tm_mday > dayAccordingMonths[tm.tm_mon] || tm.tm_mday < 1 || tm.tm_mon < 1 || tm.tm_mon > 12 || tm.tm_year > 2050 || tm.tm_year < 2009)
+	if (tm.tm_mday > dayAccordingMonths[tm.tm_mon] || tm.tm_mday < 1 || tm.tm_mon < 1 || tm.tm_mon > 12 || tm.tm_year > 9999 || tm.tm_year < 2009)
 	{
 		message = "Error: bad input => ";
 		message += strDate;
